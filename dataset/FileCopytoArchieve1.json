@@ -1,0 +1,18 @@
+{
+	"name": "FileCopytoArchieve1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobInputFile_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"type": "FileShare",
+		"structure": [
+			{
+				"name": ""
+			}
+		],
+		"typeProperties": {
+			"folderPath": "inputfiles"
+		}
+	}
+}
