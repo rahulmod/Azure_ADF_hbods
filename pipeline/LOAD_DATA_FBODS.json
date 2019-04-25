@@ -269,7 +269,7 @@
 					"storedProcedureParameters": {
 						"reason": {
 							"value": {
-								"value": "@activity('Copy_STG_to_TGT_data').output",
+								"value": "@string(activity('Copy_STG_to_TGT_data').output)\n",
 								"type": "Expression"
 							},
 							"type": "String"
