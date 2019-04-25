@@ -2,7 +2,7 @@
 	"name": "fbodsdfv2_trggr",
 	"properties": {
 		"description": "Triggers fobdsdfv2 ADF pipeline every six hours",
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
