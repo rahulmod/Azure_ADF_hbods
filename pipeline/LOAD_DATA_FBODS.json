@@ -181,18 +181,6 @@
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "CopyData_BloB_to_SQLDB",
-									"dependencyConditions": [
-										"Failed"
-									]
-								},
-								{
-									"activity": "SP_Delete_Duplicate_rows",
-									"dependencyConditions": [
-										"Failed"
-									]
-								},
-								{
 									"activity": "Copy_STG_to_TGT_data",
 									"dependencyConditions": [
 										"Failed"
@@ -210,10 +198,11 @@
 								"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
 									"reason": {
-										"value": {
-											"value": "@concat(string(activity('CopyData_BloB_to_SQLDB').output), string(activity('SP_Delete_Duplicate_rows').output), string(activity('Copy_STG_to_TGT_data').output))",
-											"type": "Expression"
-										},
+										"value": "@string(activity('Copy_STG_to_TGT_data').output)",
+										"type": "String"
+									},
+									"tgtTableName": {
+										"value": "@item().tgt_tablename",
 										"type": "String"
 									}
 								}
