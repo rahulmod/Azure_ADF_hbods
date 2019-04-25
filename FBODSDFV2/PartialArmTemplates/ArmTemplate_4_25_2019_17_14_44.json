@@ -1,0 +1,342 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "fbodsdfv2"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/LOAD_DATA_FBODS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LookupMetadata",
+						"type": "Lookup",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "SqlSource",
+								"sqlReaderStoredProcedureName": "[concat('[', 'dbo].[FB_FILE_TABLENAME_MAP]')]"
+							},
+							"dataset": {
+								"referenceName": "GetFileNameMEtadataSQL1",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "FileProcessingLoop",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "LookupMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('LookupMetadata').output.value",
+								"type": "Expression"
+							},
+							"batchCount": 4,
+							"activities": [
+								{
+									"name": "CopyData_BloB_to_SQLDB",
+									"type": "Copy",
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"typeProperties": {
+										"source": {
+											"type": "FileSystemSource",
+											"recursive": true
+										},
+										"sink": {
+											"type": "SqlSink",
+											"writeBatchSize": 10000,
+											"preCopyScript": {
+												"value": "@{concat('TRUNCATE TABLE  '  ,item().stg_tablename)}",
+												"type": "Expression"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureBlobInputFile1",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_filename": "@item().filename"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "SQLFBODS_Destination1",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_desttablename": "@item().stg_tablename"
+											}
+										}
+									]
+								},
+								{
+									"name": "SP_Delete_Duplicate_rows",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "CopyData_BloB_to_SQLDB",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"typeProperties": {
+										"storedProcedureName": "[concat('[', 'dbo].[FBODS_STG_TO_TGT_TABLES]')]",
+										"storedProcedureParameters": {
+											"stgtablename": {
+												"value": {
+													"value": "@item().stg_tablename",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"tgttablename": {
+												"value": {
+													"value": "@item().tgt_tablename",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SQL_FBODS",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Copy_STG_to_TGT_data",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "SP_Delete_Duplicate_rows",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"typeProperties": {
+										"source": {
+											"type": "SqlSource"
+										},
+										"sink": {
+											"type": "SqlSink",
+											"writeBatchSize": 10000
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "SQLFBODS_Destination1",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_desttablename": "@item().stg_tablename"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "SQLFBODS_DESTINATION_TGT1",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_TGT_DEST_TABLE_NAME": "@item().tgt_tablename"
+											}
+										}
+									]
+								},
+								{
+									"name": "SP_AddFailureEntry",
+									"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Copy_STG_to_TGT_data",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"typeProperties": {
+										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureParameters": {
+											"reason": {
+												"value": "@string(activity('Copy_STG_to_TGT_data').output)",
+												"type": "String"
+											},
+											"tgtTableName": {
+												"value": "@item().tgt_tablename",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SQL_FBODS",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "CopytoArchieve",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "FileProcessingLoop",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "FileSystemSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "FileSystemSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "FileCopytoArchieve1",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureArchieveFolder1",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "DeleteINcomingFolder",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "CopytoArchieve",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "FileCopytoArchieve1",
+								"type": "DatasetReference"
+							},
+							"enableLogging": false
+						}
+					},
+					{
+						"name": "SP_AddFailureEntry1",
+						"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "LookupMetadata",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"storedProcedureName": "[concat('[', 'dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]')]",
+							"storedProcedureParameters": {
+								"reason": {
+									"value": null,
+									"type": "String"
+								},
+								"tgtTableName": {
+									"value": null,
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SQL_FBODS",
+							"type": "LinkedServiceReference"
+						}
+					}
+				]
+			}
+		}
+	]
+}
