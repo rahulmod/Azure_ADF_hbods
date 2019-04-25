@@ -1,0 +1,67 @@
+{
+	"name": "AzureArchieveFolder1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobInputFile_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"type": "FileShare",
+		"structure": [
+			{
+				"name": "In Location timezone",
+				"type": "String"
+			},
+			{
+				"name": "Number of Records",
+				"type": "String"
+			},
+			{
+				"name": "Actor Id",
+				"type": "String"
+			},
+			{
+				"name": "Ds",
+				"type": "String"
+			},
+			{
+				"name": "Event",
+				"type": "String"
+			},
+			{
+				"name": "Event Time",
+				"type": "String"
+			},
+			{
+				"name": "WFM User Group",
+				"type": "String"
+			},
+			{
+				"name": "Location",
+				"type": "String"
+			},
+			{
+				"name": "New Status",
+				"type": "String"
+			},
+			{
+				"name": "Organization",
+				"type": "String"
+			},
+			{
+				"name": "Previous Status",
+				"type": "String"
+			},
+			{
+				"name": "Vertical Id",
+				"type": "String"
+			},
+			{
+				"name": "Vertical Name",
+				"type": "String"
+			}
+		],
+		"typeProperties": {
+			"folderPath": "archievefiles"
+		}
+	}
+}
