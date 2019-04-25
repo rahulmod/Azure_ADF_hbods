@@ -201,6 +201,10 @@
 										"value": "@string(activity('Copy_STG_to_TGT_data').output)",
 										"type": "String"
 									},
+									"srcFileName": {
+										"value": "@item().filename",
+										"type": "String"
+									},
 									"tgtTableName": {
 										"value": "@item().tgt_tablename",
 										"type": "String"
