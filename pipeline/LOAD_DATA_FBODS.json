@@ -176,7 +176,7 @@
 							]
 						},
 						{
-							"name": "SP_AddFailureEntry",
+							"name": "SP_AddFailureEntry3",
 							"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
@@ -198,7 +198,98 @@
 								"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
 									"reason": {
-										"value": "@string(activity('Copy_STG_to_TGT_data').output)",
+										"value": {
+											"value": "@string(activity('Copy_STG_to_TGT_data').output)",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"srcFileName": {
+										"value": "@item().filename",
+										"type": "String"
+									},
+									"tgtTableName": {
+										"value": "@item().tgt_tablename",
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SQL_FBODS",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "SP_AddFailureEntry2",
+							"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "SP_Delete_Duplicate_rows",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
+								"storedProcedureParameters": {
+									"reason": {
+										"value": {
+											"value": "@string(activity('SP_Delete_Duplicate_rows').output)",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"srcFileName": {
+										"value": "@item().filename",
+										"type": "String"
+									},
+									"tgtTableName": {
+										"value": "@item().tgt_tablename",
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SQL_FBODS",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "SP_AddFailureEntry1",
+							"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "CopyData_BloB_to_SQLDB",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
+								"storedProcedureParameters": {
+									"reason": {
+										"value": {
+											"value": "@string(activity('CopyData_BloB_to_SQLDB').output)",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"srcFileName": {
