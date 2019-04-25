@@ -305,10 +305,11 @@
 					"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
 					"storedProcedureParameters": {
 						"reason": {
-							"value": {
-								"value": "@string(activity('LookupMetadata').output)",
-								"type": "Expression"
-							},
+							"value": null,
+							"type": "String"
+						},
+						"tgtTableName": {
+							"value": null,
 							"type": "String"
 						}
 					}
