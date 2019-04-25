@@ -1,0 +1,111 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "fbodsdfv2"
+		},
+		"AzureBlobInputFile_LinkedService_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureBlobInputFile_LinkedService'"
+		},
+		"SQL_FBODS_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SQL_FBODS'"
+		},
+		"AzureArchieveFolder_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "archievefiles"
+		},
+		"AzureBlobInputFile_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().P_filename"
+		},
+		"AzureBlobInputFile_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "inputfiles"
+		},
+		"FileCopytoArchieve_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "inputfiles"
+		},
+		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "AZURE\\fbodsstorage"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"type": "string",
+			"defaultValue": "fbods.database.windows.net"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"type": "string",
+			"defaultValue": "fbodsadmin"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"type": "secureString"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas Token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobInputFile_LinkedService_password": {
+						"value": "[parameters('AzureBlobInputFile_LinkedService_password')]"
+					},
+					"SQL_FBODS_connectionString": {
+						"value": "[parameters('SQL_FBODS_connectionString')]"
+					},
+					"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
+						"value": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_userId')]"
+					},
+					"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+						"value": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]"
+					},
+					"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+						"value": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName')]"
+					},
+					"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+						"value": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+					},
+					"AzureArchieveFolder_properties_typeProperties_folderPath": {
+						"value": "[parameters('AzureArchieveFolder_properties_typeProperties_folderPath')]"
+					},
+					"AzureBlobInputFile_properties_typeProperties_fileName": {
+						"value": "[parameters('AzureBlobInputFile_properties_typeProperties_fileName')]"
+					},
+					"AzureBlobInputFile_properties_typeProperties_folderPath": {
+						"value": "[parameters('AzureBlobInputFile_properties_typeProperties_folderPath')]"
+					},
+					"FileCopytoArchieve_properties_typeProperties_folderPath": {
+						"value": "[parameters('FileCopytoArchieve_properties_typeProperties_folderPath')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

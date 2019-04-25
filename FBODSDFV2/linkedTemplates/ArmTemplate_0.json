@@ -1,0 +1,1109 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "fbodsdfv2"
+		},
+		"AzureBlobInputFile_LinkedService_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureBlobInputFile_LinkedService'"
+		},
+		"SQL_FBODS_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SQL_FBODS'"
+		},
+		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "AZURE\\fbodsstorage"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"type": "string",
+			"defaultValue": "fbods.database.windows.net"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"type": "string",
+			"defaultValue": "fbodsadmin"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"type": "secureString"
+		},
+		"AzureArchieveFolder_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "archievefiles"
+		},
+		"AzureBlobInputFile_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@dataset().P_filename"
+		},
+		"AzureBlobInputFile_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "inputfiles"
+		},
+		"FileCopytoArchieve_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "inputfiles"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobInputFile_LinkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\",
+					"userId": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureBlobInputFile_LinkedService_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_FBODS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('SQL_FBODS_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FBODS-INTEGRATION-V2')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "East US",
+						"nodeSize": "Standard_D2_v3",
+						"numberOfNodes": 1,
+						"maxParallelExecutionsPerNode": 1
+					},
+					"ssisProperties": {
+						"catalogInfo": {
+							"catalogServerEndpoint": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]",
+							"catalogAdminUserName": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName')]",
+							"catalogAdminPassword": {
+								"type": "SecureString",
+								"value": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+							},
+							"catalogPricingTier": "Basic"
+						},
+						"edition": "Standard",
+						"licenseType": "BasePrice"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Execute SSIS Package1",
+						"type": "ExecuteSSISPackage",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"packageLocation": {
+								"packagePath": "FBODS_TX/FBODS_RICH_PROJ_1/Load_Tableau_Extracts.dtsx"
+							},
+							"runtime": "x86",
+							"loggingLevel": "Basic",
+							"environmentPath": null,
+							"connectVia": {
+								"referenceName": "FBODS-INTEGRATION-V2",
+								"type": "IntegrationRuntimeReference"
+							},
+							"projectParameters": {
+								"ArchieveFolderPath": {
+									"value": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\archievefiles\\"
+								},
+								"InputFolderPath": {
+									"value": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\inputfiles\\"
+								},
+								"Param_DatabaseName": {
+									"value": "FBODS"
+								},
+								"Param_ServerName": {
+									"value": "fbods.database.windows.net"
+								}
+							},
+							"projectConnectionManagers": {
+								"LocalHost.FBODS.FBODS_IS": {
+									"ConnectionString": {
+										"value": "Data Source=.;User ID=FBODS_IS;Initial Catalog=FBODS;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"UserName": {
+										"value": "FBODS_IS"
+									}
+								}
+							},
+							"packageConnectionManagers": {
+								"Excel Connection Manager": {
+									"ConnectionString": {
+										"value": "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=Z:\\inputfiles\\HB_RCH_Roster_2019_FLAT_Q1_190322 LIMITED_MASKED.xlsx;Extended Properties=\"EXCEL 12.0 XML;HDR=YES\";"
+									},
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\HB_RCH_Roster_2019_FLAT_Q1_190322 LIMITED_MASKED.xlsx"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\HB_RCH_Roster_2019_FLAT_Q1_190322 LIMITED_MASKED.xlsx"
+									}
+								},
+								"Excel-Activity code timestamps - Genpact": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Activity_Code_Timesheets old": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Activity_Code_Tracking_Dashboard": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Dispute and AofA Dash_Auditor Quality": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Dispute and AofA Dash_Dispute and Overturn": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Ops Accuracy and Dispute Resolution": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Rep Consistency Dash_Inc Job": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Rep Consistency Dash_Monthly View": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Rep Consistency Dash_Rep Performance": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Rep Consistency Dash_Summary View": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Tableau_Genpact_Activity_Code_Workforce_Output": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-US HC Report": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Workforce Output_Aggregated Activity": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								},
+								"Excel-Workforce Output_Rep Level": {
+									"ExcelFilePath": {
+										"value": "Z:\\inputfiles\\"
+									},
+									"FirstRowHasColumnName": {
+										"value": "True"
+									},
+									"Password": {
+										"value": {
+											"type": "SecureString",
+											"value": "**********"
+										}
+									},
+									"RetainSameConnection": {
+										"value": "False"
+									},
+									"ServerName": {
+										"value": "Z:\\inputfiles\\"
+									}
+								}
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/FBODS-INTEGRATION-V2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureArchieveFolder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobInputFile_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"structure": [
+					{
+						"name": "In Location timezone",
+						"type": "String"
+					},
+					{
+						"name": "Number of Records",
+						"type": "String"
+					},
+					{
+						"name": "Actor Id",
+						"type": "String"
+					},
+					{
+						"name": "Ds",
+						"type": "String"
+					},
+					{
+						"name": "Event",
+						"type": "String"
+					},
+					{
+						"name": "Event Time",
+						"type": "String"
+					},
+					{
+						"name": "WFM User Group",
+						"type": "String"
+					},
+					{
+						"name": "Location",
+						"type": "String"
+					},
+					{
+						"name": "New Status",
+						"type": "String"
+					},
+					{
+						"name": "Organization",
+						"type": "String"
+					},
+					{
+						"name": "Previous Status",
+						"type": "String"
+					},
+					{
+						"name": "Vertical Id",
+						"type": "String"
+					},
+					{
+						"name": "Vertical Name",
+						"type": "String"
+					}
+				],
+				"typeProperties": {
+					"folderPath": "[parameters('AzureArchieveFolder_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobInputFile_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobInputFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobInputFile_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"P_filename": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": "\t",
+						"rowDelimiter": "",
+						"quoteChar": "\"",
+						"nullValue": "\\N",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": true
+					},
+					"fileName": {
+						"value": "[parameters('AzureBlobInputFile_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": "[parameters('AzureBlobInputFile_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobInputFile_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FileCopytoArchieve')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobInputFile_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "FileShare",
+				"structure": [
+					{
+						"name": ""
+					}
+				],
+				"typeProperties": {
+					"folderPath": "[parameters('FileCopytoArchieve_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobInputFile_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetFileNameMEtadataSQL')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SQL_FBODS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SQL_FBODS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQLFBODS_DESTINATION_TGT')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SQL_FBODS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"P_TGT_DEST_TABLE_NAME": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"typeProperties": {
+					"tableName": {
+						"value": "@dataset().P_TGT_DEST_TABLE_NAME",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SQL_FBODS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQLFBODS_Destination')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SQL_FBODS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"P_desttablename": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"typeProperties": {
+					"tableName": {
+						"value": "@dataset().P_desttablename",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SQL_FBODS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LOAD_DATA_FBODS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LookupMetadata",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlSource",
+								"sqlReaderStoredProcedureName": "[concat('[', 'dbo].[FB_FILE_TABLENAME_MAP]')]"
+							},
+							"dataset": {
+								"referenceName": "GetFileNameMEtadataSQL",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "FileProcessingLoop",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "LookupMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('LookupMetadata').output.value",
+								"type": "Expression"
+							},
+							"batchCount": 4,
+							"activities": [
+								{
+									"name": "CopyData_BloB_to_SQLDB",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "FileSystemSource",
+											"recursive": true
+										},
+										"sink": {
+											"type": "SqlSink",
+											"writeBatchSize": 10000,
+											"preCopyScript": {
+												"value": "@{concat('TRUNCATE TABLE  '  ,item().stg_tablename)}",
+												"type": "Expression"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureBlobInputFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_filename": "@item().filename"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "SQLFBODS_Destination",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_desttablename": "@item().stg_tablename"
+											}
+										}
+									]
+								},
+								{
+									"name": "SP_Delete_Duplicate_rows",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "CopyData_BloB_to_SQLDB",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[concat('[', 'dbo].[FBODS_STG_TO_TGT_TABLES]')]",
+										"storedProcedureParameters": {
+											"stgtablename": {
+												"value": {
+													"value": "@item().stg_tablename",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"tgttablename": {
+												"value": {
+													"value": "@item().tgt_tablename",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SQL_FBODS",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Copy_STG_to_TGT_data",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "SP_Delete_Duplicate_rows",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlSource"
+										},
+										"sink": {
+											"type": "SqlSink",
+											"writeBatchSize": 10000
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "SQLFBODS_Destination",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_desttablename": "@item().stg_tablename"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "SQLFBODS_DESTINATION_TGT",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_TGT_DEST_TABLE_NAME": "@item().tgt_tablename"
+											}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "CopytoArchieve",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "FileProcessingLoop",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "FileSystemSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "FileSystemSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "FileCopytoArchieve",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureArchieveFolder",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "DeleteINcomingFolder",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "CopytoArchieve",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "FileCopytoArchieve",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/GetFileNameMEtadataSQL')]",
+				"[concat(variables('factoryId'), '/datasets/FileCopytoArchieve')]",
+				"[concat(variables('factoryId'), '/datasets/AzureArchieveFolder')]",
+				"[concat(variables('factoryId'), '/datasets/AzureBlobInputFile')]",
+				"[concat(variables('factoryId'), '/datasets/SQLFBODS_Destination')]",
+				"[concat(variables('factoryId'), '/linkedServices/SQL_FBODS')]",
+				"[concat(variables('factoryId'), '/datasets/SQLFBODS_DESTINATION_TGT')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline4')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LookupMetadata",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlSource",
+								"sqlReaderStoredProcedureName": "[concat('[', 'dbo].[FB_FILE_TABLENAME_MAP]')]"
+							},
+							"dataset": {
+								"referenceName": "GetFileNameMEtadataSQL",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "FileProcessingLoop",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "LookupMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('LookupMetadata').output.value",
+								"type": "Expression"
+							},
+							"batchCount": 4,
+							"activities": [
+								{
+									"name": "CopyData_BloB_to_SQLDB",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "FileSystemSource",
+											"recursive": true
+										},
+										"sink": {
+											"type": "SqlSink",
+											"writeBatchSize": 10000
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureBlobInputFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_filename": "@item().filename"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "SQLFBODS_Destination",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_desttablename": "@item().tablename"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/GetFileNameMEtadataSQL')]",
+				"[concat(variables('factoryId'), '/datasets/AzureBlobInputFile')]",
+				"[concat(variables('factoryId'), '/datasets/SQLFBODS_Destination')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/fbodsdfv2_trggr')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Triggers fobdsdfv2 ADF pipeline every six hours",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "LOAD_DATA_FBODS",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 5,
+						"startTime": "2019-04-25T20:10:00.000Z",
+						"endTime": "2019-04-26T20:10:00.000Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/LOAD_DATA_FBODS')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "fbodsdfv2"
+		},
+		"AzureBlobInputFile_LinkedService_password": {
+			"value": ""
+		},
+		"SQL_FBODS_connectionString": {
+			"value": ""
+		},
+		"AzureArchieveFolder_properties_typeProperties_folderPath": {
+			"value": "archievefiles"
+		},
+		"AzureBlobInputFile_properties_typeProperties_fileName": {
+			"value": "@dataset().P_filename"
+		},
+		"AzureBlobInputFile_properties_typeProperties_folderPath": {
+			"value": "inputfiles"
+		},
+		"FileCopytoArchieve_properties_typeProperties_folderPath": {
+			"value": "inputfiles"
+		},
+		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
+			"value": "AZURE\\fbodsstorage"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"value": "fbods.database.windows.net"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"value": "fbodsadmin"
+		},
+		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"value": ""
+		}
+	}
+}
