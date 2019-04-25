@@ -18,7 +18,7 @@
 						"sqlReaderStoredProcedureName": "[dbo].[FB_FILE_TABLENAME_MAP]"
 					},
 					"dataset": {
-						"referenceName": "GetFileNameMEtadataSQL1",
+						"referenceName": "GetFileNameMEtadataSQL",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
@@ -66,25 +66,7 @@
 									}
 								},
 								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "AzureBlobInputFile1",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_filename": "@item().filename"
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "SQLFBODS_Destination1",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_desttablename": "@item().stg_tablename"
-									}
-								}
-							]
+							}
 						},
 						{
 							"name": "SP_Delete_Duplicate_rows",
@@ -155,25 +137,7 @@
 									"writeBatchSize": 10000
 								},
 								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "SQLFBODS_Destination1",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_desttablename": "@item().stg_tablename"
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "SQLFBODS_DESTINATION_TGT1",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_TGT_DEST_TABLE_NAME": "@item().tgt_tablename"
-									}
-								}
-							]
+							}
 						},
 						{
 							"name": "SP_AddFailureEntry3",
@@ -205,11 +169,17 @@
 										"type": "String"
 									},
 									"srcFileName": {
-										"value": "@item().filename",
+										"value": {
+											"value": "@item().filename",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"tgtTableName": {
-										"value": "@item().tgt_tablename",
+										"value": {
+											"value": "@item().tgt_tablename",
+											"type": "Expression"
+										},
 										"type": "String"
 									}
 								}
@@ -249,11 +219,17 @@
 										"type": "String"
 									},
 									"srcFileName": {
-										"value": "@item().filename",
+										"value": {
+											"value": "@item().filename",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"tgtTableName": {
-										"value": "@item().tgt_tablename",
+										"value": {
+											"value": "@item().tgt_tablename",
+											"type": "Expression"
+										},
 										"type": "String"
 									}
 								}
@@ -293,11 +269,17 @@
 										"type": "String"
 									},
 									"srcFileName": {
-										"value": "@item().filename",
+										"value": {
+											"value": "@item().filename",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"tgtTableName": {
-										"value": "@item().tgt_tablename",
+										"value": {
+											"value": "@item().tgt_tablename",
+											"type": "Expression"
+										},
 										"type": "String"
 									}
 								}
@@ -333,23 +315,8 @@
 						"type": "FileSystemSource",
 						"recursive": true
 					},
-					"sink": {
-						"type": "FileSystemSink"
-					},
 					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "FileCopytoArchieve1",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "AzureArchieveFolder1",
-						"type": "DatasetReference"
-					}
-				]
+				}
 			},
 			{
 				"name": "DeleteINcomingFolder",
@@ -370,10 +337,6 @@
 					"secureInput": false
 				},
 				"typeProperties": {
-					"dataset": {
-						"referenceName": "FileCopytoArchieve1",
-						"type": "DatasetReference"
-					},
 					"enableLogging": false
 				}
 			},
