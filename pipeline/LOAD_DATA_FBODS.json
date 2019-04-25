@@ -299,7 +299,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "FileProcessingLoop",
+						"activity": "LookupMetadata",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -317,7 +317,7 @@
 					"storedProcedureParameters": {
 						"reason": {
 							"value": {
-								"value": "@string(activity('Copy_STG_to_TGT_data').output)",
+								"value": "@string(activity('LookupMetadata').output)",
 								"type": "Expression"
 							},
 							"type": "String"
