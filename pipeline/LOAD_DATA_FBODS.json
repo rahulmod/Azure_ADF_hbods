@@ -315,8 +315,23 @@
 						"type": "FileSystemSource",
 						"recursive": true
 					},
+					"sink": {
+						"type": "FileSystemSink"
+					},
 					"enableStaging": false
-				}
+				},
+				"inputs": [
+					{
+						"referenceName": "FileCopytoArchieve",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureArchieveFolder",
+						"type": "DatasetReference"
+					}
+				]
 			},
 			{
 				"name": "DeleteINcomingFolder",
@@ -337,6 +352,10 @@
 					"secureInput": false
 				},
 				"typeProperties": {
+					"dataset": {
+						"referenceName": "FileCopytoArchieve",
+						"type": "DatasetReference"
+					},
 					"enableLogging": false
 				}
 			},
