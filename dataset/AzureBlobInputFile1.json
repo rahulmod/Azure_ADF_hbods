@@ -1,0 +1,32 @@
+{
+	"name": "AzureBlobInputFile1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobInputFile_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_filename": {
+				"type": "String"
+			}
+		},
+		"type": "FileShare",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": "\t",
+				"rowDelimiter": "",
+				"quoteChar": "\"",
+				"nullValue": "\\N",
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": true
+			},
+			"fileName": {
+				"value": "@dataset().P_filename",
+				"type": "Expression"
+			},
+			"folderPath": "inputfiles"
+		}
+	}
+}
