@@ -378,7 +378,7 @@
 				}
 			},
 			{
-				"name": "SP_AddFailureEntry1",
+				"name": "SP_AddFailureEntry4",
 				"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
@@ -400,6 +400,13 @@
 					"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
 					"storedProcedureParameters": {
 						"reason": {
+							"value": {
+								"value": "@activity('LookupMetadata').output",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"srcFileName": {
 							"value": null,
 							"type": "String"
 						},
