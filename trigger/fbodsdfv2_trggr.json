@@ -3,14 +3,6 @@
 	"properties": {
 		"description": "Triggers fobdsdfv2 ADF pipeline every six hours",
 		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "LOAD_DATA_FBODS",
-					"type": "PipelineReference"
-				}
-			}
-		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
