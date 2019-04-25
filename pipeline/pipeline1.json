@@ -1,0 +1,369 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute SSIS Package1",
+				"type": "ExecuteSSISPackage",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"packageLocation": {
+						"packagePath": "FBODS_TX/FBODS_RICH_PROJ_1/Load_Tableau_Extracts.dtsx"
+					},
+					"runtime": "x86",
+					"loggingLevel": "Basic",
+					"environmentPath": null,
+					"connectVia": {
+						"referenceName": "FBODS-INTEGRATION-V2",
+						"type": "IntegrationRuntimeReference"
+					},
+					"projectParameters": {
+						"ArchieveFolderPath": {
+							"value": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\archievefiles\\"
+						},
+						"InputFolderPath": {
+							"value": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\inputfiles\\"
+						},
+						"Param_DatabaseName": {
+							"value": "FBODS"
+						},
+						"Param_ServerName": {
+							"value": "fbods.database.windows.net"
+						}
+					},
+					"projectConnectionManagers": {
+						"LocalHost.FBODS.FBODS_IS": {
+							"ConnectionString": {
+								"value": "Data Source=.;User ID=FBODS_IS;Initial Catalog=FBODS;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"UserName": {
+								"value": "FBODS_IS"
+							}
+						}
+					},
+					"packageConnectionManagers": {
+						"Excel Connection Manager": {
+							"ConnectionString": {
+								"value": "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=Z:\\inputfiles\\HB_RCH_Roster_2019_FLAT_Q1_190322 LIMITED_MASKED.xlsx;Extended Properties=\"EXCEL 12.0 XML;HDR=YES\";"
+							},
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\HB_RCH_Roster_2019_FLAT_Q1_190322 LIMITED_MASKED.xlsx"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\HB_RCH_Roster_2019_FLAT_Q1_190322 LIMITED_MASKED.xlsx"
+							}
+						},
+						"Excel-Activity code timestamps - Genpact": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Activity_Code_Timesheets old": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Activity_Code_Tracking_Dashboard": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Dispute and AofA Dash_Auditor Quality": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Dispute and AofA Dash_Dispute and Overturn": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Ops Accuracy and Dispute Resolution": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Rep Consistency Dash_Inc Job": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Rep Consistency Dash_Monthly View": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Rep Consistency Dash_Rep Performance": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Rep Consistency Dash_Summary View": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Tableau_Genpact_Activity_Code_Workforce_Output": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-US HC Report": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Workforce Output_Aggregated Activity": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						},
+						"Excel-Workforce Output_Rep Level": {
+							"ExcelFilePath": {
+								"value": "Z:\\inputfiles\\"
+							},
+							"FirstRowHasColumnName": {
+								"value": "True"
+							},
+							"Password": {
+								"value": {
+									"type": "SecureString",
+									"value": "**********"
+								}
+							},
+							"RetainSameConnection": {
+								"value": "False"
+							},
+							"ServerName": {
+								"value": "Z:\\inputfiles\\"
+							}
+						}
+					}
+				}
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

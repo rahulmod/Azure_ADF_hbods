@@ -1,0 +1,22 @@
+{
+	"name": "SQLFBODS_Destination",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQL_FBODS",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_desttablename": {
+				"type": "String"
+			}
+		},
+		"type": "AzureSqlTable",
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().P_desttablename",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,22 @@
+{
+	"name": "SQLFBODS_DESTINATION_TGT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQL_FBODS",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_TGT_DEST_TABLE_NAME": {
+				"type": "String"
+			}
+		},
+		"type": "AzureSqlTable",
+		"typeProperties": {
+			"tableName": {
+				"value": "@dataset().P_TGT_DEST_TABLE_NAME",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
