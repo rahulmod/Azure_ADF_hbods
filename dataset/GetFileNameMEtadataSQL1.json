@@ -1,0 +1,10 @@
+{
+	"name": "GetFileNameMEtadataSQL1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQL_FBODS",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureSqlTable"
+	}
+}
