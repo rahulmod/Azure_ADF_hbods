@@ -520,6 +520,12 @@
 						"dependencyConditions": [
 							"Failed"
 						]
+					},
+					{
+						"activity": "SP_AddFailureEntry4",
+						"dependencyConditions": [
+							"Failed"
+						]
 					}
 				],
 				"policy": {
