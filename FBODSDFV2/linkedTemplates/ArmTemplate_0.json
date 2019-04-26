@@ -1249,6 +1249,38 @@
 							"referenceName": "SQL_FBODS",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "SendFalureEmail",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "FileProcessingLoop",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"DataFactoryName": "@{pipeline().DataFactory}",
+								"PipelineName": "@{pipeline().Pipeline}",
+								"Subject": "An error has occurred!",
+								"ErrorMessage": "The ADF pipeline has crashed! Please check the logs. @activity('FileProcessingLoop').output.value",
+								"EmailTo": "rahul.modak1@fb.genpact.com"
+							}
+						}
 					}
 				],
 				"annotations": []
