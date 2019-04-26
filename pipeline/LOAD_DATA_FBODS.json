@@ -295,27 +295,26 @@
 								"secureInput": false
 							},
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
+								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
+									"activityName": {
+										"value": "CopyData_BloB_to_SQLDB",
+										"type": "String"
+									},
 									"reason": {
-										"value": {
-											"value": "@string(activity('CopyData_BloB_to_SQLDB').output)",
-											"type": "Expression"
-										},
+										"value": "@string(activity('CopyData_BloB_to_SQLDB').output)",
 										"type": "String"
 									},
 									"srcFileName": {
-										"value": {
-											"value": "@item().filename",
-											"type": "Expression"
-										},
+										"value": "@item().filename",
+										"type": "String"
+									},
+									"tgtColName": {
+										"value": null,
 										"type": "String"
 									},
 									"tgtTableName": {
-										"value": {
-											"value": "@item().tgt_tablename",
-											"type": "Expression"
-										},
+										"value": "@item().tgt_tablename",
 										"type": "String"
 									}
 								}
