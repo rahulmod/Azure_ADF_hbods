@@ -434,7 +434,7 @@
 									"value": "@item().filename",
 									"type": "Expression"
 								},
-								"enableLogging": true
+								"enableLogging": false
 							}
 						}
 					]
