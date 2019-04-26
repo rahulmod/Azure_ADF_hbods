@@ -362,50 +362,6 @@
 								"referenceName": "SQL_FBODS",
 								"type": "LinkedServiceReference"
 							}
-						},
-						{
-							"name": "FileCopyToArchive",
-							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "Copy_STG_to_TGT_data",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"typeProperties": {
-								"source": {
-									"type": "FileSystemSource",
-									"recursive": false
-								},
-								"sink": {
-									"type": "FileSystemSink"
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "AzureBlobInputFile",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_filename": "@item().filename"
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "AzureArchieveFolder",
-									"type": "DatasetReference"
-								}
-							]
 						}
 					]
 				}
@@ -480,48 +436,6 @@
 					"referenceName": "SQL_FBODS",
 					"type": "LinkedServiceReference"
 				}
-			},
-			{
-				"name": "CopyFilesToArchive",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "FileProcessingLoop",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"typeProperties": {
-					"source": {
-						"type": "FileSystemSource",
-						"recursive": true,
-						"maxConcurrentConnections": 4
-					},
-					"sink": {
-						"type": "FileSystemSink"
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "FileCopytoArchieve",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "AzureArchieveFolder",
-						"type": "DatasetReference"
-					}
-				]
 			}
 		]
 	}
