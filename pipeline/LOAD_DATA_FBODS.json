@@ -427,12 +427,11 @@
 							},
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "FileCopytoArchieve",
-									"type": "DatasetReference"
-								},
-								"recursive": {
-									"value": "@item().filename",
-									"type": "Expression"
+									"referenceName": "AzureBlobInputFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_filename": "@item().filename"
+									}
 								},
 								"enableLogging": false
 							}
