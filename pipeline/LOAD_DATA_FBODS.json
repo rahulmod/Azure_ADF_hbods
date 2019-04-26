@@ -535,7 +535,7 @@
 						"DataFactoryName": "@{pipeline().DataFactory}",
 						"PipelineName": "@{pipeline().Pipeline}",
 						"Subject": "An error has occurred!",
-						"ErrorMessage": "@{activity('FileProcessingLoop').output.errors}",
+						"ErrorMessage": "Activity 'FileProcessingLoop' is failed, please check the pipeline metrics log",
 						"EmailTo": "rahul.modak1@fb.genpact.com"
 					}
 				}
@@ -568,7 +568,7 @@
 						"DataFactoryName": "@{pipeline().DataFactory}",
 						"PipelineName": "@{pipeline().Pipeline}",
 						"Subject": "An error has occurred!",
-						"ErrorMessage": "@{activity('FileCopyToArchive').output.errors}",
+						"ErrorMessage": "Activity 'FileCopyToArchive' is failed, please check the pipeline metrics log",
 						"EmailTo": "rahul.modak1@fb.genpact.com"
 					}
 				}
