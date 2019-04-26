@@ -618,7 +618,7 @@
 								"DataFactoryName": "@{pipeline().DataFactory}",
 								"PipelineName": "@{pipeline().Pipeline}",
 								"Subject": "An error has occurred!",
-								"ErrorMessage": "The ADF pipeline has crashed! Please check the logs. @activity('FileProcessingLoop').output.value",
+								"ErrorMessage": "The ADF pipeline has crashed! Please check the logs.",
 								"EmailTo": "rahul.modak1@fb.genpact.com"
 							}
 						}
