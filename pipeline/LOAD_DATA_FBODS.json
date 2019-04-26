@@ -435,6 +435,54 @@
 								},
 								"enableLogging": false
 							}
+						},
+						{
+							"name": "WebActivity1",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "DeleteIncomingFile",
+									"dependencyConditions": [
+										"Failed"
+									]
+								},
+								{
+									"activity": "SP_AddFailureEntry1",
+									"dependencyConditions": [
+										"Failed"
+									]
+								},
+								{
+									"activity": "SP_AddFailureEntry2",
+									"dependencyConditions": [
+										"Failed"
+									]
+								},
+								{
+									"activity": "SP_AddFailureEntry3",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
+								"method": "POST",
+								"body": {
+									"DataFactoryName": "@{pipeline().DataFactory}",
+									"PipelineName": "@{pipeline().Pipeline}",
+									"Subject": "An error has occurred!",
+									"ErrorMessage": "The ADF pipeline has crashed! Please check the logs.",
+									"EmailTo": "rahul.modak1@fb.genpact.com"
+								}
+							}
 						}
 					]
 				}
@@ -513,14 +561,6 @@
 			{
 				"name": "SendFalureEmail",
 				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "FileProcessingLoop",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
