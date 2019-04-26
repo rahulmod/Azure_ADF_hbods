@@ -121,7 +121,10 @@
 										"sink": {
 											"type": "SqlSink",
 											"writeBatchSize": 10000,
-											"preCopyScript": "@{concat('TRUNCATE TABLE ' ,item().stg_tablename)}"
+											"preCopyScript": {
+												"value": "@{concat('TRUNCATE TABLE ' ,item().stg_tablename)}",
+												"type": "Expression"
+											}
 										},
 										"enableStaging": false
 									},
@@ -256,27 +259,29 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
 										"storedProcedureParameters": {
-											"reason": {
+											"activityName": {
 												"value": {
-													"value": "@string(activity('Copy_STG_to_TGT_data').output)",
+													"value": "Copy_STG_to_TGT_data",
 													"type": "Expression"
 												},
+												"type": "String"
+											},
+											"reason": {
+												"value": "@string(activity('Copy_STG_to_TGT_data').output)",
 												"type": "String"
 											},
 											"srcFileName": {
-												"value": {
-													"value": "@item().filename",
-													"type": "Expression"
-												},
+												"value": "@item().filename",
+												"type": "String"
+											},
+											"tgtColName": {
+												"value": null,
 												"type": "String"
 											},
 											"tgtTableName": {
-												"value": {
-													"value": "@item().tgt_tablename",
-													"type": "Expression"
-												},
+												"value": "@item().tgt_tablename",
 												"type": "String"
 											}
 										}
@@ -307,27 +312,29 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
 										"storedProcedureParameters": {
-											"reason": {
+											"activityName": {
 												"value": {
-													"value": "@string(activity('SP_Delete_Duplicate_rows').output)",
+													"value": "SP_Delete_Duplicate_rows",
 													"type": "Expression"
 												},
+												"type": "String"
+											},
+											"reason": {
+												"value": "@string(activity('SP_Delete_Duplicate_rows').output)",
 												"type": "String"
 											},
 											"srcFileName": {
-												"value": {
-													"value": "@item().filename",
-													"type": "Expression"
-												},
+												"value": "@item().filename",
+												"type": "String"
+											},
+											"tgtColName": {
+												"value": null,
 												"type": "String"
 											},
 											"tgtTableName": {
-												"value": {
-													"value": "@item().tgt_tablename",
-													"type": "Expression"
-												},
+												"value": "@item().tgt_tablename",
 												"type": "String"
 											}
 										}
@@ -358,27 +365,26 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
 										"storedProcedureParameters": {
+											"activityName": {
+												"value": "CopyData_BloB_to_SQLDB",
+												"type": "String"
+											},
 											"reason": {
-												"value": {
-													"value": "@string(activity('CopyData_BloB_to_SQLDB').output)",
-													"type": "Expression"
-												},
+												"value": "@string(activity('CopyData_BloB_to_SQLDB').output)",
 												"type": "String"
 											},
 											"srcFileName": {
-												"value": {
-													"value": "@item().filename",
-													"type": "Expression"
-												},
+												"value": "@item().filename",
+												"type": "String"
+											},
+											"tgtColName": {
+												"value": null,
 												"type": "String"
 											},
 											"tgtTableName": {
-												"value": {
-													"value": "@item().tgt_tablename",
-													"type": "Expression"
-												},
+												"value": "@item().tgt_tablename",
 												"type": "String"
 											}
 										}
@@ -484,8 +490,12 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "[concat('[', 'dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]')]",
+							"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
 							"storedProcedureParameters": {
+								"activityName": {
+									"value": "LookupMetadata",
+									"type": "String"
+								},
 								"reason": {
 									"value": {
 										"value": "@activity('LookupMetadata').output",
@@ -494,6 +504,10 @@
 									"type": "String"
 								},
 								"srcFileName": {
+									"value": null,
+									"type": "String"
+								},
+								"tgtColName": {
 									"value": null,
 									"type": "String"
 								},
