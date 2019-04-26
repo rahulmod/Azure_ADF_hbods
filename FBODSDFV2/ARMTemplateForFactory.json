@@ -60,7 +60,14 @@
 					{
 						"name": "LookupMetadata",
 						"type": "Lookup",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "DeleteArchiveFolder",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -269,11 +276,17 @@
 												"type": "String"
 											},
 											"reason": {
-												"value": "@string(activity('Copy_STG_to_TGT_data').output)",
+												"value": {
+													"value": "@string(activity('Copy_STG_to_TGT_data').output)",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"srcFileName": {
-												"value": "@item().filename",
+												"value": {
+													"value": "@item().filename",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"tgtColName": {
@@ -281,7 +294,10 @@
 												"type": "String"
 											},
 											"tgtTableName": {
-												"value": "@item().tgt_tablename",
+												"value": {
+													"value": "@item().tgt_tablename",
+													"type": "Expression"
+												},
 												"type": "String"
 											}
 										}
@@ -322,11 +338,17 @@
 												"type": "String"
 											},
 											"reason": {
-												"value": "@string(activity('SP_Delete_Duplicate_rows').output)",
+												"value": {
+													"value": "@string(activity('SP_Delete_Duplicate_rows').output)",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"srcFileName": {
-												"value": "@item().filename",
+												"value": {
+													"value": "@item().filename",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"tgtColName": {
@@ -334,7 +356,10 @@
 												"type": "String"
 											},
 											"tgtTableName": {
-												"value": "@item().tgt_tablename",
+												"value": {
+													"value": "@item().tgt_tablename",
+													"type": "Expression"
+												},
 												"type": "String"
 											}
 										}
@@ -372,11 +397,17 @@
 												"type": "String"
 											},
 											"reason": {
-												"value": "@string(activity('CopyData_BloB_to_SQLDB').output)",
+												"value": {
+													"value": "@string(activity('CopyData_BloB_to_SQLDB').output)",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"srcFileName": {
-												"value": "@item().filename",
+												"value": {
+													"value": "@item().filename",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"tgtColName": {
@@ -384,7 +415,10 @@
 												"type": "String"
 											},
 											"tgtTableName": {
-												"value": "@item().tgt_tablename",
+												"value": {
+													"value": "@item().tgt_tablename",
+													"type": "Expression"
+												},
 												"type": "String"
 											}
 										}
@@ -393,65 +427,93 @@
 										"referenceName": "SQL_FBODS",
 										"type": "LinkedServiceReference"
 									}
+								},
+								{
+									"name": "FileCopyToArchive",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Copy_STG_to_TGT_data",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "FileSystemSource",
+											"recursive": {
+												"value": "@item().filename",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "FileSystemSink"
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "FileCopytoArchieve",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "AzureArchieveFolder",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "DeleteIncomingFile",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "FileCopyToArchive",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "FileCopytoArchieve",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"recursive": {
+											"value": "@item().filename",
+											"type": "Expression"
+										},
+										"enableLogging": false
+									}
 								}
 							]
 						}
 					},
 					{
-						"name": "CopytoArchieve",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "FileProcessingLoop",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "FileSystemSource",
-								"recursive": true
-							},
-							"sink": {
-								"type": "FileSystemSink"
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "FileCopytoArchieve",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "AzureArchieveFolder",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "DeleteINcomingFolder",
+						"name": "DeleteArchiveFolder",
 						"type": "Delete",
-						"dependsOn": [
-							{
-								"activity": "CopytoArchieve",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -462,10 +524,11 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataset": {
-								"referenceName": "FileCopytoArchieve",
+								"referenceName": "AzureArchieveFolder",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
+							"recursive": true,
 							"enableLogging": false
 						}
 					},
@@ -527,12 +590,12 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/GetFileNameMEtadataSQL')]",
-				"[concat(variables('factoryId'), '/datasets/FileCopytoArchieve')]",
 				"[concat(variables('factoryId'), '/datasets/AzureArchieveFolder')]",
 				"[concat(variables('factoryId'), '/linkedServices/SQL_FBODS')]",
 				"[concat(variables('factoryId'), '/datasets/AzureBlobInputFile')]",
 				"[concat(variables('factoryId'), '/datasets/SQLFBODS_Destination')]",
-				"[concat(variables('factoryId'), '/datasets/SQLFBODS_DESTINATION_TGT')]"
+				"[concat(variables('factoryId'), '/datasets/SQLFBODS_DESTINATION_TGT')]",
+				"[concat(variables('factoryId'), '/datasets/FileCopytoArchieve')]"
 			]
 		},
 		{
