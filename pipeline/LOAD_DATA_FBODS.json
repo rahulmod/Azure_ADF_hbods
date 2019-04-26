@@ -60,7 +60,10 @@
 								"sink": {
 									"type": "SqlSink",
 									"writeBatchSize": 10000,
-									"preCopyScript": "@{concat('TRUNCATE TABLE ' ,item().stg_tablename)}"
+									"preCopyScript": {
+										"value": "@{concat('TRUNCATE TABLE ' ,item().stg_tablename)}",
+										"type": "Expression"
+									}
 								},
 								"enableStaging": false
 							},
@@ -412,8 +415,12 @@
 					"secureInput": false
 				},
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
+					"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 					"storedProcedureParameters": {
+						"activityName": {
+							"value": "LookupMetadata",
+							"type": "String"
+						},
 						"reason": {
 							"value": {
 								"value": "@activity('LookupMetadata').output",
@@ -422,6 +429,10 @@
 							"type": "String"
 						},
 						"srcFileName": {
+							"value": null,
+							"type": "String"
+						},
+						"tgtColName": {
 							"value": null,
 							"type": "String"
 						},
