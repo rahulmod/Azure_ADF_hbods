@@ -60,13 +60,28 @@
 								"sink": {
 									"type": "SqlSink",
 									"writeBatchSize": 10000,
-									"preCopyScript": {
-										"value": "@{concat('TRUNCATE TABLE  '  ,item().stg_tablename)}",
-										"type": "Expression"
-									}
+									"preCopyScript": "@{concat('TRUNCATE TABLE ' ,item().stg_tablename)}"
 								},
 								"enableStaging": false
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureBlobInputFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_filename": "@item().filename"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SQLFBODS_Destination",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_desttablename": "@item().stg_tablename"
+									}
+								}
+							]
 						},
 						{
 							"name": "SP_Delete_Duplicate_rows",
