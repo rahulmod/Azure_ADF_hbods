@@ -245,27 +245,29 @@
 								"secureInput": false
 							},
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[FBODS_FALIURE_ENTRY_LOAD_STATUS]",
+								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
-									"reason": {
+									"activityName": {
 										"value": {
-											"value": "@string(activity('SP_Delete_Duplicate_rows').output)",
+											"value": "SP_Delete_Duplicate_rows",
 											"type": "Expression"
 										},
+										"type": "String"
+									},
+									"reason": {
+										"value": "@string(activity('SP_Delete_Duplicate_rows').output)",
 										"type": "String"
 									},
 									"srcFileName": {
-										"value": {
-											"value": "@item().filename",
-											"type": "Expression"
-										},
+										"value": "@item().filename",
+										"type": "String"
+									},
+									"tgtColName": {
+										"value": null,
 										"type": "String"
 									},
 									"tgtTableName": {
-										"value": {
-											"value": "@item().tgt_tablename",
-											"type": "Expression"
-										},
+										"value": "@item().tgt_tablename",
 										"type": "String"
 									}
 								}
