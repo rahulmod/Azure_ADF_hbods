@@ -381,7 +381,7 @@
 						"referenceName": "AzureArchieveFolder",
 						"type": "DatasetReference"
 					},
-					"recursive": true,
+					"recursive": false,
 					"enableLogging": false
 				}
 			},
@@ -502,7 +502,7 @@
 						"referenceName": "FileCopytoArchieve",
 						"type": "DatasetReference"
 					},
-					"recursive": true,
+					"recursive": false,
 					"enableLogging": false,
 					"maxConcurrentConnections": 4
 				}
