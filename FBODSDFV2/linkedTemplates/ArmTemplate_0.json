@@ -1092,84 +1092,6 @@
 										"referenceName": "SQL_FBODS",
 										"type": "LinkedServiceReference"
 									}
-								},
-								{
-									"name": "FileCopyToArchive",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Copy_STG_to_TGT_data",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "FileSystemSource",
-											"recursive": false
-										},
-										"sink": {
-											"type": "FileSystemSink"
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "AzureBlobInputFile",
-											"type": "DatasetReference",
-											"parameters": {
-												"P_filename": "@item().filename"
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "AzureArchieveFolder",
-											"type": "DatasetReference",
-											"parameters": {}
-										}
-									]
-								},
-								{
-									"name": "DeleteIncomingFile",
-									"type": "Delete",
-									"dependsOn": [
-										{
-											"activity": "FileCopyToArchive",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "FileCopytoArchieve",
-											"type": "DatasetReference",
-											"parameters": {}
-										},
-										"recursive": {
-											"value": "@item().filename",
-											"type": "Expression"
-										},
-										"enableLogging": false
-									}
 								}
 							]
 						}
@@ -1192,7 +1114,6 @@
 								"type": "DatasetReference",
 								"parameters": {}
 							},
-							"recursive": true,
 							"enableLogging": false
 						}
 					},
@@ -1250,17 +1171,85 @@
 						}
 					},
 					{
-						"name": "SendFalureEmail",
-						"type": "WebActivity",
+						"name": "FileCopyToArchive",
+						"type": "Copy",
 						"dependsOn": [
 							{
 								"activity": "FileProcessingLoop",
 								"dependencyConditions": [
-									"Failed"
+									"Succeeded"
 								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "FileSystemSource",
+								"recursive": true,
+								"maxConcurrentConnections": 4
 							},
+							"sink": {
+								"type": "FileSystemSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
 							{
-								"activity": "SP_AddFailureEntry4",
+								"referenceName": "FileCopytoArchieve",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureArchieveFolder",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "DeleteInputFiles",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "FileCopyToArchive",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "FileCopytoArchieve",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"maxConcurrentConnections": 4
+						}
+					},
+					{
+						"name": "SendFailureEmail",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "FileProcessingLoop",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -1282,7 +1271,41 @@
 								"DataFactoryName": "@{pipeline().DataFactory}",
 								"PipelineName": "@{pipeline().Pipeline}",
 								"Subject": "An error has occurred!",
-								"ErrorMessage": "The ADF pipeline has crashed! Please check the logs.",
+								"ErrorMessage": "Activity 'FileProcessingLoop' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
+								"EmailTo": "rahul.modak1@fb.genpact.com"
+							}
+						}
+					},
+					{
+						"name": "SendCopyToArchiveFailure",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "FileCopyToArchive",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"body": {
+								"DataFactoryName": "@{pipeline().DataFactory}",
+								"PipelineName": "@{pipeline().Pipeline}",
+								"Subject": "An error has occurred!",
+								"ErrorMessage": "Activity 'FileCopyToArchive' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
 								"EmailTo": "rahul.modak1@fb.genpact.com"
 							}
 						}
@@ -1294,10 +1317,10 @@
 				"[concat(variables('factoryId'), '/datasets/GetFileNameMEtadataSQL')]",
 				"[concat(variables('factoryId'), '/datasets/AzureArchieveFolder')]",
 				"[concat(variables('factoryId'), '/linkedServices/SQL_FBODS')]",
+				"[concat(variables('factoryId'), '/datasets/FileCopytoArchieve')]",
 				"[concat(variables('factoryId'), '/datasets/AzureBlobInputFile')]",
 				"[concat(variables('factoryId'), '/datasets/SQLFBODS_Destination')]",
-				"[concat(variables('factoryId'), '/datasets/SQLFBODS_DESTINATION_TGT')]",
-				"[concat(variables('factoryId'), '/datasets/FileCopytoArchieve')]"
+				"[concat(variables('factoryId'), '/datasets/SQLFBODS_DESTINATION_TGT')]"
 			]
 		},
 		{
