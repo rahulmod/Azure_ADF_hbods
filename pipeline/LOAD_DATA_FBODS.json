@@ -152,7 +152,25 @@
 									"writeBatchSize": 10000
 								},
 								"enableStaging": false
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "SQLFBODS_Destination",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_desttablename": "@item().stg_tablename"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SQLFBODS_DESTINATION_TGT",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_TGT_DEST_TABLE_NAME": "@item().tgt_tablename"
+									}
+								}
+							]
 						},
 						{
 							"name": "SP_AddFailureEntry3",
