@@ -34,18 +34,6 @@
 		},
 		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 			"value": ""
-		},
-		"FileCopytoArchieve1_properties_typeProperties_folderPath": {
-			"value": "inputfiles"
-		},
-		"AzureArchieveFolder1_properties_typeProperties_folderPath": {
-			"value": "archievefiles"
-		},
-		"AzureBlobInputFile1_properties_typeProperties_fileName": {
-			"value": "@dataset().P_filename"
-		},
-		"AzureBlobInputFile1_properties_typeProperties_folderPath": {
-			"value": "inputfiles"
 		}
 	}
 }
