@@ -565,7 +565,7 @@
 						"DataFactoryName": "@{pipeline().DataFactory}",
 						"PipelineName": "@{pipeline().Pipeline}",
 						"Subject": "An error has occurred!",
-						"ErrorMessage": "@{activity('FileCopyToArchive').output.errors}",
+						"ErrorMessage": "@{activity('FileCopyToArchive').Error.message}",
 						"EmailTo": "rahul.modak1@fb.genpact.com"
 					}
 				}
