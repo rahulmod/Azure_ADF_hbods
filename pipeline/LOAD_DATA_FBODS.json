@@ -384,10 +384,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "FileSystemSource",
-									"recursive": {
-										"value": "@item().filename",
-										"type": "Expression"
-									}
+									"recursive": false
 								},
 								"sink": {
 									"type": "FileSystemSink"
@@ -396,8 +393,11 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "FileCopytoArchieve",
-									"type": "DatasetReference"
+									"referenceName": "AzureBlobInputFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_filename": "@item().filename"
+									}
 								}
 							],
 							"outputs": [
