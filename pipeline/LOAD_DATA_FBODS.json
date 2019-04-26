@@ -468,11 +468,8 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "AzureBlobInputFile",
-						"type": "DatasetReference",
-						"parameters": {
-							"P_filename": "@item().filename"
-						}
+						"referenceName": "FileCopytoArchieve",
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
