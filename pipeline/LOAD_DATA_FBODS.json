@@ -531,7 +531,13 @@
 				"typeProperties": {
 					"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
 					"method": "POST",
-					"body": "{\n \"DataFactoryName\": \"@{pipeline().DataFactory}\",\n   \"PipelineName\": \"@{pipeline().Pipeline}\",\n   \"Subject\": \"An error has occurred!\",\n   \"ErrorMessage\": \"@{activity(\"FileProcessingLoop').Error.message}\",\n   \"EmailTo\": \"rahul.modak1@fb.genpact.com\"\n}\t"
+					"body": {
+						"DataFactoryName": "@{pipeline().DataFactory}",
+						"PipelineName": "@{pipeline().Pipeline}",
+						"Subject": "An error has occurred!",
+						"ErrorMessage": "@{activity('FileProcessingLoop').output.errors}",
+						"EmailTo": "rahul.modak1@fb.genpact.com"
+					}
 				}
 			},
 			{
@@ -555,9 +561,6 @@
 				"typeProperties": {
 					"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
 					"method": "POST",
-					"headers": {
-						"Content-Type": "application/json"
-					},
 					"body": {
 						"DataFactoryName": "@{pipeline().DataFactory}",
 						"PipelineName": "@{pipeline().Pipeline}",
