@@ -5,6 +5,14 @@
 			{
 				"name": "LookupMetadata",
 				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "DeleteArchiveFolder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -354,6 +362,42 @@
 								"referenceName": "SQL_FBODS",
 								"type": "LinkedServiceReference"
 							}
+						},
+						{
+							"name": "FileCopyToArchive",
+							"type": "Copy",
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"source": {
+									"type": "FileSystemSource",
+									"recursive": {
+										"value": "@item().filename",
+										"type": "Expression"
+									}
+								},
+								"sink": {
+									"type": "FileSystemSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "FileCopytoArchieve",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureArchieveFolder",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
