@@ -354,6 +354,111 @@
 								"referenceName": "SQL_FBODS",
 								"type": "LinkedServiceReference"
 							}
+						},
+						{
+							"name": "Copy_InputFiles_to_Archive",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Copy_STG_to_TGT_data",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"source": {
+									"type": "FileSystemSource",
+									"recursive": true
+								},
+								"sink": {
+									"type": "FileSystemSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureBlobInputFile",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_filename": "@item().filename"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureArchieveFolder",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "SqlServerStoredProcedure6",
+							"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_InputFiles_to_Archive",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
+								"storedProcedureParameters": {
+									"activityName": {
+										"value": {
+											"value": "Copy_InputFiles_to_Archive",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"reason": {
+										"value": {
+											"value": "@string(activity('Copy_InputFiles_to_Archive').output)",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"srcFileName": {
+										"value": {
+											"value": "@item().filename",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"tgtColName": {
+										"value": null,
+										"type": "String"
+									},
+									"tgtTableName": {
+										"value": {
+											"value": "@item().tgt_tablename",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SQL_FBODS",
+								"type": "LinkedServiceReference"
+							}
 						}
 					]
 				}
