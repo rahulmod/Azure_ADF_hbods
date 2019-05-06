@@ -725,14 +725,7 @@
 					{
 						"name": "LookupMetadata",
 						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "DeleteArchiveFolder",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -1092,29 +1085,116 @@
 										"referenceName": "SQL_FBODS",
 										"type": "LinkedServiceReference"
 									}
+								},
+								{
+									"name": "Copy_InputFiles_to_Archive",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Copy_STG_to_TGT_data",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "FileSystemSource",
+											"recursive": true
+										},
+										"sink": {
+											"type": "FileSystemSink"
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureBlobInputFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"P_filename": "@item().filename"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "AzureArchieveFolder",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "SqlServerStoredProcedure6",
+									"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Copy_InputFiles_to_Archive",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureParameters": {
+											"activityName": {
+												"value": {
+													"value": "Copy_InputFiles_to_Archive",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"reason": {
+												"value": {
+													"value": "@string(activity('Copy_InputFiles_to_Archive').output)",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"srcFileName": {
+												"value": {
+													"value": "@item().filename",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"tgtColName": {
+												"value": null,
+												"type": "String"
+											},
+											"tgtTableName": {
+												"value": {
+													"value": "@item().tgt_tablename",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "SQL_FBODS",
+										"type": "LinkedServiceReference"
+									}
 								}
 							]
-						}
-					},
-					{
-						"name": "DeleteArchiveFolder",
-						"type": "Delete",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "AzureArchieveFolder",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"enableLogging": false
 						}
 					},
 					{
@@ -1171,56 +1251,11 @@
 						}
 					},
 					{
-						"name": "FileCopyToArchive",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "FileProcessingLoop",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "FileSystemSource",
-								"recursive": true,
-								"maxConcurrentConnections": 4
-							},
-							"sink": {
-								"type": "FileSystemSink"
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "FileCopytoArchieve",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "AzureArchieveFolder",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
 						"name": "DeleteInputFiles",
 						"type": "Delete",
 						"dependsOn": [
 							{
-								"activity": "FileCopyToArchive",
+								"activity": "FileProcessingLoop",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1272,16 +1307,16 @@
 								"PipelineName": "@{pipeline().Pipeline}",
 								"Subject": "An error has occurred!",
 								"ErrorMessage": "Activity 'FileProcessingLoop' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
-								"EmailTo": "rahul.modak1@fb.genpact.com"
+								"EmailTo": "genpactswiftreportingteam@genpact.com"
 							}
 						}
 					},
 					{
-						"name": "SendCopyToArchiveFailure",
+						"name": "SendLookupErrorMail",
 						"type": "WebActivity",
 						"dependsOn": [
 							{
-								"activity": "FileCopyToArchive",
+								"activity": "SP_AddFailureEntry4",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -1298,16 +1333,99 @@
 						"typeProperties": {
 							"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
 							"method": "POST",
-							"headers": {
-								"Content-Type": "application/json"
-							},
+							"headers": {},
 							"body": {
 								"DataFactoryName": "@{pipeline().DataFactory}",
 								"PipelineName": "@{pipeline().Pipeline}",
 								"Subject": "An error has occurred!",
-								"ErrorMessage": "Activity 'FileCopyToArchive' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
-								"EmailTo": "rahul.modak1@fb.genpact.com"
+								"ErrorMessage": "Activity 'LookupMetadata' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
+								"EmailTo": "genpactswiftreportingteam@genpact.com"
 							}
+						}
+					},
+					{
+						"name": "SendDeleteFilesErrorEmail",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "SP_AddFailureEntry7",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"DataFactoryName": "@{pipeline().DataFactory}",
+								"PipelineName": "@{pipeline().Pipeline}",
+								"Subject": "An error has occurred!",
+								"ErrorMessage": "Activity 'DeleteInputFiles' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
+								"EmailTo": "genpactswiftreportingteam@genpact.com"
+							}
+						}
+					},
+					{
+						"name": "SP_AddFailureEntry7",
+						"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "DeleteInputFiles",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
+							"storedProcedureParameters": {
+								"activityName": {
+									"value": "DeleteInputFiles",
+									"type": "String"
+								},
+								"reason": {
+									"value": {
+										"value": "@activity('DeleteInputFiles').output",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"srcFileName": {
+									"value": null,
+									"type": "String"
+								},
+								"tgtColName": {
+									"value": null,
+									"type": "String"
+								},
+								"tgtTableName": {
+									"value": null,
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "SQL_FBODS",
+							"type": "LinkedServiceReference"
 						}
 					}
 				],
@@ -1315,12 +1433,12 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/GetFileNameMEtadataSQL')]",
-				"[concat(variables('factoryId'), '/datasets/AzureArchieveFolder')]",
 				"[concat(variables('factoryId'), '/linkedServices/SQL_FBODS')]",
 				"[concat(variables('factoryId'), '/datasets/FileCopytoArchieve')]",
 				"[concat(variables('factoryId'), '/datasets/AzureBlobInputFile')]",
 				"[concat(variables('factoryId'), '/datasets/SQLFBODS_Destination')]",
-				"[concat(variables('factoryId'), '/datasets/SQLFBODS_DESTINATION_TGT')]"
+				"[concat(variables('factoryId'), '/datasets/SQLFBODS_DESTINATION_TGT')]",
+				"[concat(variables('factoryId'), '/datasets/AzureArchieveFolder')]"
 			]
 		},
 		{
