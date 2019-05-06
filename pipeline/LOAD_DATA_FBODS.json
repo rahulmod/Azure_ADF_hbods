@@ -516,53 +516,11 @@
 				}
 			},
 			{
-				"name": "FileCopyToArchive",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "FileProcessingLoop",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"typeProperties": {
-					"source": {
-						"type": "FileSystemSource",
-						"recursive": true,
-						"maxConcurrentConnections": 4
-					},
-					"sink": {
-						"type": "FileSystemSink"
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "FileCopytoArchieve",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "AzureArchieveFolder",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
 				"name": "DeleteInputFiles",
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "FileCopyToArchive",
+						"activity": "FileProcessingLoop",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -612,58 +570,6 @@
 						"ErrorMessage": "Activity 'FileProcessingLoop' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
 						"EmailTo": "genpactswiftreportingteam@genpact.com"
 					}
-				}
-			},
-			{
-				"name": "SP_AddFailureEntry5",
-				"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "FileCopyToArchive",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"typeProperties": {
-					"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
-					"storedProcedureParameters": {
-						"activityName": {
-							"value": "FileCopyToArchive",
-							"type": "String"
-						},
-						"reason": {
-							"value": {
-								"value": "@activity('FileCopyToArchive').output",
-								"type": "Expression"
-							},
-							"type": "String"
-						},
-						"srcFileName": {
-							"value": null,
-							"type": "String"
-						},
-						"tgtColName": {
-							"value": null,
-							"type": "String"
-						},
-						"tgtTableName": {
-							"value": null,
-							"type": "String"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "SQL_FBODS",
-					"type": "LinkedServiceReference"
 				}
 			}
 		]
