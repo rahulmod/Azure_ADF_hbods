@@ -431,7 +431,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "FileSystemSource",
-						"recursive": true,
+						"recursive": false,
 						"maxConcurrentConnections": 4
 					},
 					"sink": {
