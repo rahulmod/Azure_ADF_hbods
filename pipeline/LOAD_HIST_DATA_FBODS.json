@@ -43,7 +43,7 @@
 					"batchCount": 4,
 					"activities": [
 						{
-							"name": "Copy1",
+							"name": "Copy_Files_to_TGT_tables",
 							"type": "Copy",
 							"policy": {
 								"timeout": "7.00:00:00",
@@ -59,11 +59,7 @@
 								},
 								"sink": {
 									"type": "SqlSink",
-									"writeBatchSize": 10000,
-									"preCopyScript": {
-										"value": "@{concat('TRUNCATE TABLE ' ,item().stg_tablename)}",
-										"type": "Expression"
-									}
+									"writeBatchSize": 10000
 								},
 								"enableStaging": false
 							},
@@ -81,173 +77,15 @@
 									"referenceName": "SQLFBODS_Destination",
 									"type": "DatasetReference",
 									"parameters": {
-										"P_desttablename": "@item().stg_tablename"
+										"P_desttablename": "@item().tgt_tablename"
 									}
 								}
 							]
-						},
-						{
-							"name": "SqlServerStoredProcedure1",
-							"type": "SqlServerStoredProcedure",
-							"dependsOn": [
-								{
-									"activity": "Copy1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"typeProperties": {
-								"storedProcedureName": "[dbo].[FBODS_STG_TO_TGT_TABLES]",
-								"storedProcedureParameters": {
-									"stgtablename": {
-										"value": {
-											"value": "@item().stg_tablename",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"tgttablename": {
-										"value": {
-											"value": "@item().tgt_tablename",
-											"type": "Expression"
-										},
-										"type": "String"
-									}
-								}
-							},
-							"linkedServiceName": {
-								"referenceName": "SQL_FBODS",
-								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"name": "Copy2",
-							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "SqlServerStoredProcedure1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"typeProperties": {
-								"source": {
-									"type": "SqlSource"
-								},
-								"sink": {
-									"type": "SqlSink",
-									"writeBatchSize": 10000
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "SQLFBODS_Destination",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_desttablename": "@item().stg_tablename"
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "SQLFBODS_DESTINATION_TGT",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_TGT_DEST_TABLE_NAME": "@item().tgt_tablename"
-									}
-								}
-							]
-						},
-						{
-							"name": "SqlServerStoredProcedure2",
-							"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
-							"type": "SqlServerStoredProcedure",
-							"dependsOn": [
-								{
-									"activity": "Copy2",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"typeProperties": {
-								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
-								"storedProcedureParameters": {
-									"activityName": {
-										"value": {
-											"value": "Copy_STG_to_TGT_data",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"reason": {
-										"value": {
-											"value": "@string(activity('Copy_STG_to_TGT_data').output)",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"srcFileName": {
-										"value": {
-											"value": "@item().filename",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"tgtColName": {
-										"value": null,
-										"type": "String"
-									},
-									"tgtTableName": {
-										"value": {
-											"value": "@item().tgt_tablename",
-											"type": "Expression"
-										},
-										"type": "String"
-									}
-								}
-							},
-							"linkedServiceName": {
-								"referenceName": "SQL_FBODS",
-								"type": "LinkedServiceReference"
-							}
 						},
 						{
 							"name": "SqlServerStoredProcedure3",
 							"description": "Add file load failure entry into FBODS_LOAD_STATUS table",
 							"type": "SqlServerStoredProcedure",
-							"dependsOn": [
-								{
-									"activity": "SqlServerStoredProcedure1",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -303,7 +141,7 @@
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Copy1",
+									"activity": "Copy_Files_to_TGT_tables",
 									"dependencyConditions": [
 										"Failed"
 									]
@@ -320,12 +158,12 @@
 								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
 									"activityName": {
-										"value": "CopyData_BloB_to_SQLDB",
+										"value": "Copy_Files_to_TGT_tables",
 										"type": "String"
 									},
 									"reason": {
 										"value": {
-											"value": "@string(activity('CopyData_BloB_to_SQLDB').output)",
+											"value": "@string(activity('Copy_Files_to_TGT_tables').output)",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -356,11 +194,11 @@
 							}
 						},
 						{
-							"name": "Copy3",
+							"name": "Copy_Files_to_Archive",
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Copy2",
+									"activity": "Copy_Files_to_TGT_tables",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -405,7 +243,7 @@
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
-									"activity": "Copy3",
+									"activity": "Copy_Files_to_Archive",
 									"dependencyConditions": [
 										"Failed"
 									]
@@ -423,14 +261,14 @@
 								"storedProcedureParameters": {
 									"activityName": {
 										"value": {
-											"value": "Copy_InputFiles_to_Archive",
+											"value": "Copy_Files_to_Archive",
 											"type": "Expression"
 										},
 										"type": "String"
 									},
 									"reason": {
 										"value": {
-											"value": "@string(activity('Copy_InputFiles_to_Archive').output)",
+											"value": "@string(activity('Copy_Files_to_Archive').output)",
 											"type": "Expression"
 										},
 										"type": "String"
