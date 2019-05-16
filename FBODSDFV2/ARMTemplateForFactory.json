@@ -72,7 +72,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "SqlSource",
-								"sqlReaderStoredProcedureName": "[concat('[', 'dbo].[FB_FILE_TABLENAME_MAP]')]"
+								"sqlReaderStoredProcedureName": "[[dbo].[FB_FILE_TABLENAME_MAP]"
 							},
 							"dataset": {
 								"referenceName": "GetFileNameMEtadataSQL",
@@ -167,7 +167,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[concat('[', 'dbo].[FBODS_STG_TO_TGT_TABLES]')]",
+										"storedProcedureName": "[[dbo].[FBODS_STG_TO_TGT_TABLES]",
 										"storedProcedureParameters": {
 											"stgtablename": {
 												"value": {
@@ -259,7 +259,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureName": "[[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 										"storedProcedureParameters": {
 											"activityName": {
 												"value": {
@@ -321,7 +321,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureName": "[[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 										"storedProcedureParameters": {
 											"activityName": {
 												"value": {
@@ -383,7 +383,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureName": "[[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 										"storedProcedureParameters": {
 											"activityName": {
 												"value": "CopyData_BloB_to_SQLDB",
@@ -488,7 +488,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
+										"storedProcedureName": "[[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 										"storedProcedureParameters": {
 											"activityName": {
 												"value": {
@@ -553,7 +553,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
+							"storedProcedureName": "[[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 							"storedProcedureParameters": {
 								"activityName": {
 									"value": "LookupMetadata",
@@ -731,7 +731,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"storedProcedureName": "[concat('[', 'dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]')]",
+							"storedProcedureName": "[[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 							"storedProcedureParameters": {
 								"activityName": {
 									"value": "DeleteInputFiles",
@@ -799,12 +799,12 @@
 								"packagePath": "FBODS_TX/FBODS_RICH_PROJ_1/Load_Tableau_Extracts.dtsx"
 							},
 							"runtime": "x86",
-							"loggingLevel": "Basic",
 							"environmentPath": null,
 							"connectVia": {
 								"referenceName": "FBODS-INTEGRATION-V2",
 								"type": "IntegrationRuntimeReference"
 							},
+							"loggingLevel": "Basic",
 							"projectParameters": {
 								"ArchieveFolderPath": {
 									"value": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\archievefiles\\"
@@ -1150,110 +1150,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/FBODS-INTEGRATION-V2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline4')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "LookupMetadata",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlSource",
-								"sqlReaderStoredProcedureName": "[concat('[', 'dbo].[FB_FILE_TABLENAME_MAP]')]"
-							},
-							"dataset": {
-								"referenceName": "GetFileNameMEtadataSQL",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "FileProcessingLoop",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "LookupMetadata",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('LookupMetadata').output.value",
-								"type": "Expression"
-							},
-							"batchCount": 4,
-							"activities": [
-								{
-									"name": "CopyData_BloB_to_SQLDB",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "FileSystemSource",
-											"recursive": true
-										},
-										"sink": {
-											"type": "SqlSink",
-											"writeBatchSize": 10000
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "AzureBlobInputFile",
-											"type": "DatasetReference",
-											"parameters": {
-												"P_filename": "@item().filename"
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "SQLFBODS_Destination",
-											"type": "DatasetReference",
-											"parameters": {
-												"P_desttablename": "@item().tablename"
-											}
-										}
-									]
-								}
-							]
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/GetFileNameMEtadataSQL')]",
-				"[concat(variables('factoryId'), '/datasets/AzureBlobInputFile')]",
-				"[concat(variables('factoryId'), '/datasets/SQLFBODS_Destination')]"
 			]
 		},
 		{
