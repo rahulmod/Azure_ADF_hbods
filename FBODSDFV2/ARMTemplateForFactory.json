@@ -5,11 +5,7 @@
 		"factoryName": {
 			"type": "string",
 			"metadata": "Data Factory Name",
-			"defaultValue": "fbodsdfv2"
-		},
-		"AzureBlobInputFile_LinkedService_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'AzureBlobInputFile_LinkedService'"
+			"defaultValue": "FBODSDFV2"
 		},
 		"SQL_FBODS_connectionString": {
 			"type": "secureString",
@@ -34,6 +30,10 @@
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "AZURE\\fbodsstorage"
+		},
+		"adfhbods1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://hbods1.vault.azure.net/"
 		},
 		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 			"type": "string",
@@ -1369,12 +1369,18 @@
 					"host": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\",
 					"userId": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_userId')]",
 					"password": {
-						"type": "SecureString",
-						"value": "[parameters('AzureBlobInputFile_LinkedService_password')]"
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "adfhbods1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "adfLinkedfilestrk"
 					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adfhbods1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SQL_FBODS')]",
@@ -1384,7 +1390,30 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"connectionString": "[parameters('SQL_FBODS_connectionString')]"
+					"connectionString": "[parameters('SQL_FBODS_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "adfhbods1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "adfLinkedDbv"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/adfhbods1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adfhbods1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('adfhbods1_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -1436,6 +1465,25 @@
 						},
 						"edition": "Standard",
 						"licenseType": "BasePrice"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLiveInMinutes": 60
+						}
 					}
 				}
 			},

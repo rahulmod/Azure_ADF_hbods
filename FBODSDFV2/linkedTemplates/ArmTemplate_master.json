@@ -5,11 +5,7 @@
 		"factoryName": {
 			"type": "string",
 			"metadata": "Data Factory Name",
-			"defaultValue": "fbodsdfv2"
-		},
-		"AzureBlobInputFile_LinkedService_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'AzureBlobInputFile_LinkedService'"
+			"defaultValue": "FBODSDFV2"
 		},
 		"SQL_FBODS_connectionString": {
 			"type": "secureString",
@@ -34,6 +30,10 @@
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "AZURE\\fbodsstorage"
+		},
+		"adfhbods1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://hbods1.vault.azure.net/"
 		},
 		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 			"type": "string",
@@ -73,14 +73,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"AzureBlobInputFile_LinkedService_password": {
-						"value": "[parameters('AzureBlobInputFile_LinkedService_password')]"
-					},
 					"SQL_FBODS_connectionString": {
 						"value": "[parameters('SQL_FBODS_connectionString')]"
 					},
-					"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
-						"value": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_userId')]"
+					"adfhbods1_properties_typeProperties_baseUrl": {
+						"value": "[parameters('adfhbods1_properties_typeProperties_baseUrl')]"
 					},
 					"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 						"value": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]"
@@ -90,6 +87,9 @@
 					},
 					"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 						"value": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+					},
+					"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
+						"value": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_userId')]"
 					},
 					"AzureArchieveFolder_properties_typeProperties_folderPath": {
 						"value": "[parameters('AzureArchieveFolder_properties_typeProperties_folderPath')]"

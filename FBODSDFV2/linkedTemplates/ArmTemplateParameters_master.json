@@ -3,10 +3,7 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"factoryName": {
-			"value": "fbodsdfv2"
-		},
-		"AzureBlobInputFile_LinkedService_password": {
-			"value": ""
+			"value": "FBODSDFV2"
 		},
 		"SQL_FBODS_connectionString": {
 			"value": ""
@@ -25,6 +22,9 @@
 		},
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"value": "AZURE\\fbodsstorage"
+		},
+		"adfhbods1_properties_typeProperties_baseUrl": {
+			"value": "https://hbods1.vault.azure.net/"
 		},
 		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 			"value": "fbods.database.windows.net"
