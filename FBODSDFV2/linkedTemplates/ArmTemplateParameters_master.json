@@ -5,9 +5,6 @@
 		"factoryName": {
 			"value": "FBODSDFV2"
 		},
-		"SQL_FBODS_connectionString": {
-			"value": ""
-		},
 		"AzureArchieveFolder_properties_typeProperties_folderPath": {
 			"value": "archievefiles"
 		},
@@ -22,6 +19,9 @@
 		},
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"value": "AZURE\\fbodsstorage"
+		},
+		"SQL_FBODS_properties_typeProperties_connectionString_secretName": {
+			"value": "sqlConStr"
 		},
 		"adfhbods1_properties_typeProperties_baseUrl": {
 			"value": "https://hbods1.vault.azure.net/"

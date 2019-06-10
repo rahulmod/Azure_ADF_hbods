@@ -7,10 +7,6 @@
 			"metadata": "Data Factory Name",
 			"defaultValue": "FBODSDFV2"
 		},
-		"SQL_FBODS_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SQL_FBODS'"
-		},
 		"AzureArchieveFolder_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "archievefiles"
@@ -30,6 +26,10 @@
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "AZURE\\fbodsstorage"
+		},
+		"SQL_FBODS_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "sqlConStr"
 		},
 		"adfhbods1_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -1390,7 +1390,14 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"connectionString": "[parameters('SQL_FBODS_connectionString')]",
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "adfhbods1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('SQL_FBODS_properties_typeProperties_connectionString_secretName')]"
+					},
 					"password": {
 						"type": "AzureKeyVaultSecret",
 						"store": {

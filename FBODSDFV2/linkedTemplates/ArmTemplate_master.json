@@ -7,10 +7,6 @@
 			"metadata": "Data Factory Name",
 			"defaultValue": "FBODSDFV2"
 		},
-		"SQL_FBODS_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SQL_FBODS'"
-		},
 		"AzureArchieveFolder_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "archievefiles"
@@ -30,6 +26,10 @@
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "AZURE\\fbodsstorage"
+		},
+		"SQL_FBODS_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "sqlConStr"
 		},
 		"adfhbods1_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -73,9 +73,6 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"SQL_FBODS_connectionString": {
-						"value": "[parameters('SQL_FBODS_connectionString')]"
-					},
 					"adfhbods1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('adfhbods1_properties_typeProperties_baseUrl')]"
 					},
@@ -90,6 +87,9 @@
 					},
 					"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 						"value": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_userId')]"
+					},
+					"SQL_FBODS_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('SQL_FBODS_properties_typeProperties_connectionString_secretName')]"
 					},
 					"AzureArchieveFolder_properties_typeProperties_folderPath": {
 						"value": "[parameters('AzureArchieveFolder_properties_typeProperties_folderPath')]"
