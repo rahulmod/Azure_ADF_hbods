@@ -3,7 +3,7 @@
 	"properties": {
 		"type": "FileServer",
 		"typeProperties": {
-			"host": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\",
+			"host": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming",
 			"userId": "AZURE\\fbodsstorage",
 			"password": {
 				"type": "AzureKeyVaultSecret",
