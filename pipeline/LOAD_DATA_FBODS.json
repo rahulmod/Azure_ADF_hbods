@@ -503,7 +503,11 @@
 									"parameters": {
 										"P_filename": "@item().filename"
 									}
-								}
+								},
+								"fieldList": [
+									"itemName",
+									"exists"
+								]
 							}
 						}
 					]
