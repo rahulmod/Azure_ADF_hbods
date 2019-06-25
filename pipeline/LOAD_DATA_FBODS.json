@@ -45,6 +45,14 @@
 						{
 							"name": "CopyData_BloB_to_SQLDB",
 							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CheckFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -458,6 +466,16 @@
 							"linkedServiceName": {
 								"referenceName": "SQL_FBODS",
 								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "CheckFile",
+							"type": "IfCondition",
+							"typeProperties": {
+								"expression": {
+									"value": "@item().filename.exists",
+									"type": "Expression"
+								}
 							}
 						}
 					]
