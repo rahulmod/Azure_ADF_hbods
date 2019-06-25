@@ -473,7 +473,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Get Metadata1",
+									"activity": "Get_Metadata",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -481,13 +481,13 @@
 							],
 							"typeProperties": {
 								"expression": {
-									"value": "@activity('Get Metadata1').output.exists",
+									"value": "@activity('Get_Metadata').output.exists",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "Get Metadata1",
+							"name": "Get_Metadata",
 							"type": "GetMetadata",
 							"policy": {
 								"timeout": "7.00:00:00",
@@ -498,11 +498,8 @@
 							},
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "AzureBlobInputFile",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_filename": "@item().filename"
-									}
+									"referenceName": "FileCopytoArchieve",
+									"type": "DatasetReference"
 								},
 								"fieldList": [
 									"itemName",
