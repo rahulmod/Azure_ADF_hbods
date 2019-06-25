@@ -706,11 +706,7 @@
 					"dataset": {
 						"referenceName": "FileCopytoArchieve",
 						"type": "DatasetReference"
-					},
-					"fieldList": [
-						"childItems",
-						"exists"
-					]
+					}
 				}
 			},
 			{
@@ -726,7 +722,7 @@
 				],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('Get Metadata1').output.exists",
+						"value": "@activity('Get Metadata1').output.itemName.exists",
 						"type": "Expression"
 					}
 				}
