@@ -725,7 +725,7 @@
 				],
 				"typeProperties": {
 					"expression": {
-						"value": "@not{empty{activity('Get Metadata1').output.childItems}}",
+						"value": "@not(empty(activity('Get Metadata1').output.childItems))",
 						"type": "Expression"
 					}
 				}
