@@ -37,20 +37,7 @@
 					"expression": {
 						"value": "@empty(activity('SourceFilesMetadata').output.childItems)",
 						"type": "Expression"
-					},
-					"ifTrueActivities": [
-						{
-							"name": "Execute Pipeline1",
-							"type": "ExecutePipeline",
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "LOAD_DATA_FBODS",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true
-							}
-						}
-					]
+					}
 				}
 			}
 		]
