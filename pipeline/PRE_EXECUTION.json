@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SourFilesMetadata",
+				"name": "SourceFilesMetadata",
 				"type": "GetMetadata",
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -27,7 +27,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "SourFilesMetadata",
+						"activity": "SourceFilesMetadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -35,7 +35,7 @@
 				],
 				"typeProperties": {
 					"expression": {
-						"value": "@empty(activity('SourFilesMetadata').output.childItems)",
+						"value": "@empty(activity('SourceFilesMetadata').output.childItems)",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
