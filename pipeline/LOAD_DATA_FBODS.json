@@ -9,7 +9,7 @@
 					{
 						"activity": "If Condition1",
 						"dependencyConditions": [
-							"Succeeded"
+							"Skipped"
 						]
 					}
 				],
@@ -725,7 +725,7 @@
 				],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(empty(activity('Get Metadata1').output.childItems))",
+						"value": "@empty(activity('Get Metadata1').output.childItems)",
 						"type": "Expression"
 					}
 				}
