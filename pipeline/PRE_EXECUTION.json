@@ -1,0 +1,58 @@
+{
+	"name": "PRE_EXECUTION",
+	"properties": {
+		"activities": [
+			{
+				"name": "SourFilesMetadata",
+				"type": "GetMetadata",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "FileCopytoArchieve",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					]
+				}
+			},
+			{
+				"name": "IfCondition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "SourFilesMetadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"typeProperties": {
+					"expression": {
+						"value": "@empty(activity('SourFilesMetadata').output.childItems)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "LOAD_DATA_FBODS",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			}
+		]
+	}
+}
