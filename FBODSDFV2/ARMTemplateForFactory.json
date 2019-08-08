@@ -1480,8 +1480,16 @@
 			"properties": {
 				"description": "Triggers LOAD_DATA_FBODS pipeline every hour",
 				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "LOAD_DATA_FBODS",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
@@ -1492,7 +1500,9 @@
 					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/LOAD_DATA_FBODS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/FBODS-INTEGRATION-V2')]",
