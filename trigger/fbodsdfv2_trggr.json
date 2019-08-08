@@ -4,7 +4,14 @@
 		"description": "Triggers LOAD_DATA_FBODS pipeline every hour",
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [],
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "LOAD_DATA_FBODS",
+					"type": "PipelineReference"
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
