@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Triggers LOAD_DATA_FBODS pipeline every hour",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
