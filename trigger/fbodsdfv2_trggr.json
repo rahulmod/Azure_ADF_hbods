@@ -1,15 +1,16 @@
 {
 	"name": "fbodsdfv2_trggr",
 	"properties": {
-		"description": "Triggers fobdsdfv2 ADF pipeline every six hours",
+		"description": "Triggers LOAD_DATA_FBODS pipeline every hour",
+		"annotations": [],
 		"runtimeState": "Stopped",
+		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Minute",
-				"interval": 5,
-				"startTime": "2019-04-25T20:10:00.000Z",
-				"endTime": "2019-04-25T21:10:00.000Z",
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2019-08-08T15:00:00.000Z",
 				"timeZone": "UTC"
 			}
 		}
