@@ -1,0 +1,11 @@
+{
+	"name": "AzureBlobStorage1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "a0eb0e96-2d95-4b98-9b6b-596e72bce91d"
+		}
+	}
+}
