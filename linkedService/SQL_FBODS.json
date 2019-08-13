@@ -10,7 +10,8 @@
 					"referenceName": "adfhbods1",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "sqlConStr"
+				"secretName": "sqlConStr1",
+				"secretVersion": ""
 			}
 		},
 		"connectVia": {
