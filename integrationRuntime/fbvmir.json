@@ -1,0 +1,7 @@
+{
+	"name": "fbvmir",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "Integrated Environment for vm"
+	}
+}
