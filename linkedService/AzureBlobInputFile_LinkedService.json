@@ -12,7 +12,8 @@
 					"referenceName": "adfhbods1",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "adfLinkedfilestrk"
+				"secretName": "adfLinkedfilestrk",
+				"secretVersion": ""
 			}
 		},
 		"connectVia": {
