@@ -1,6 +1,7 @@
 {
 	"name": "AzureBlobInputFile_LinkedService",
 	"properties": {
+		"annotations": [],
 		"type": "FileServer",
 		"typeProperties": {
 			"host": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\",
@@ -13,6 +14,10 @@
 				},
 				"secretName": "adfLinkedfilestrk"
 			}
+		},
+		"connectVia": {
+			"referenceName": "fbvmir",
+			"type": "IntegrationRuntimeReference"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/linkedservices"
