@@ -1,6 +1,7 @@
 {
 	"name": "SQL_FBODS",
 	"properties": {
+		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
 			"connectionString": {
@@ -10,15 +11,11 @@
 					"type": "LinkedServiceReference"
 				},
 				"secretName": "sqlConStr"
-			},
-			"password": {
-				"type": "AzureKeyVaultSecret",
-				"store": {
-					"referenceName": "adfhbods1",
-					"type": "LinkedServiceReference"
-				},
-				"secretName": "adfLinkedDbv"
 			}
+		},
+		"connectVia": {
+			"referenceName": "fbvmir",
+			"type": "IntegrationRuntimeReference"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/linkedservices"
