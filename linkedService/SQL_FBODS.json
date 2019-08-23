@@ -11,12 +11,8 @@
 					"type": "LinkedServiceReference"
 				},
 				"secretName": "sqlConStr1",
-				"secretVersion": ""
+				"secretVersion": "fbodsadmin"
 			}
-		},
-		"connectVia": {
-			"referenceName": "fbvmir",
-			"type": "IntegrationRuntimeReference"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/linkedservices"
