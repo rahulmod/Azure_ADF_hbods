@@ -22,13 +22,17 @@
 		"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 			"type": "secureString"
 		},
+		"AzureBlobInputFile_LinkedService_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\"
+		},
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "AZURE\\fbodsstorage"
 		},
 		"SQL_FBODS_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
-			"defaultValue": "sqlConStr"
+			"defaultValue": "sqlConStr1"
 		},
 		"AzureArchieveFolder_properties_typeProperties_folderPath": {
 			"type": "string",
@@ -95,21 +99,13 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"name": "[concat(parameters('factoryName'), '/fbvmir')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "AutoResolve",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 8,
-							"timeToLiveInMinutes": 60
-						}
-					}
-				}
+				"type": "SelfHosted",
+				"description": "Integrated Environment for vm",
+				"typeProperties": {}
 			},
 			"dependsOn": []
 		},
@@ -498,7 +494,7 @@
 				"annotations": [],
 				"type": "FileServer",
 				"typeProperties": {
-					"host": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\",
+					"host": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_host')]",
 					"userId": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_userId')]",
 					"password": {
 						"type": "AzureKeyVaultSecret",
@@ -506,11 +502,17 @@
 							"referenceName": "adfhbods1",
 							"type": "LinkedServiceReference"
 						},
-						"secretName": "adfLinkedfilestrk"
+						"secretName": "adfLinkedfilestrk",
+						"secretVersion": ""
 					}
+				},
+				"connectVia": {
+					"referenceName": "fbvmir",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/fbvmir')]",
 				"[concat(variables('factoryId'), '/linkedServices/adfhbods1')]"
 			]
 		},
@@ -528,11 +530,17 @@
 							"referenceName": "adfhbods1",
 							"type": "LinkedServiceReference"
 						},
-						"secretName": "[parameters('SQL_FBODS_properties_typeProperties_connectionString_secretName')]"
+						"secretName": "[parameters('SQL_FBODS_properties_typeProperties_connectionString_secretName')]",
+						"secretVersion": ""
 					}
+				},
+				"connectVia": {
+					"referenceName": "fbvmir",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/fbvmir')]",
 				"[concat(variables('factoryId'), '/linkedServices/adfhbods1')]"
 			]
 		},
@@ -1308,14 +1316,7 @@
 					{
 						"name": "SendFailureEmail",
 						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "FileProcessingLoop",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -1340,14 +1341,7 @@
 					{
 						"name": "SendLookupErrorMail",
 						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "SP_AddFailureEntry4",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -1372,14 +1366,7 @@
 					{
 						"name": "SendDeleteFilesErrorEmail",
 						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "SP_AddFailureEntry7",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
+						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,

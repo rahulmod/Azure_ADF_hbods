@@ -17,11 +17,14 @@
 		"FileCopytoArchieve_properties_typeProperties_folderPath": {
 			"value": "inputfiles"
 		},
+		"AzureBlobInputFile_LinkedService_properties_typeProperties_host": {
+			"value": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\"
+		},
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"value": "AZURE\\fbodsstorage"
 		},
 		"SQL_FBODS_properties_typeProperties_connectionString_secretName": {
-			"value": "sqlConStr"
+			"value": "sqlConStr1"
 		},
 		"adfhbods1_properties_typeProperties_baseUrl": {
 			"value": "https://hbods1.vault.azure.net/"

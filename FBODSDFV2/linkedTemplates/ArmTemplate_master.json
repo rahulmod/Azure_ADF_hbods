@@ -23,13 +23,17 @@
 			"type": "string",
 			"defaultValue": "inputfiles"
 		},
+		"AzureBlobInputFile_LinkedService_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\fbodsstorage.file.core.windows.net\\fbodsincoming\\"
+		},
 		"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "AZURE\\fbodsstorage"
 		},
 		"SQL_FBODS_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
-			"defaultValue": "sqlConStr"
+			"defaultValue": "sqlConStr1"
 		},
 		"adfhbods1_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -84,6 +88,9 @@
 					},
 					"FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 						"value": "[parameters('FBODS-INTEGRATION-V2_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+					},
+					"AzureBlobInputFile_LinkedService_properties_typeProperties_host": {
+						"value": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_host')]"
 					},
 					"AzureBlobInputFile_LinkedService_properties_typeProperties_userId": {
 						"value": "[parameters('AzureBlobInputFile_LinkedService_properties_typeProperties_userId')]"
