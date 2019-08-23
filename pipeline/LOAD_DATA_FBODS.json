@@ -5,6 +5,7 @@
 			{
 				"name": "LookupMetadata",
 				"type": "Lookup",
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -12,6 +13,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "SqlSource",
@@ -35,6 +37,7 @@
 						]
 					}
 				],
+				"userProperties": [],
 				"typeProperties": {
 					"items": {
 						"value": "@activity('LookupMetadata').output.value",
@@ -45,6 +48,7 @@
 						{
 							"name": "CopyData_BloB_to_SQLDB",
 							"type": "Copy",
+							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
 								"retry": 0,
@@ -52,6 +56,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
 							"typeProperties": {
 								"source": {
 									"type": "FileSystemSource",
@@ -104,6 +109,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
 							"typeProperties": {
 								"storedProcedureName": "[dbo].[FBODS_STG_TO_TGT_TABLES]",
 								"storedProcedureParameters": {
@@ -146,6 +152,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
 							"typeProperties": {
 								"source": {
 									"type": "SqlSource"
@@ -194,6 +201,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
 							"typeProperties": {
 								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
@@ -255,6 +263,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
 							"typeProperties": {
 								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
@@ -316,6 +325,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
 							"typeProperties": {
 								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
@@ -373,6 +383,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
 							"typeProperties": {
 								"source": {
 									"type": "FileSystemSource",
@@ -418,6 +429,7 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
+							"userProperties": [],
 							"typeProperties": {
 								"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 								"storedProcedureParameters": {
@@ -482,6 +494,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 					"storedProcedureParameters": {
@@ -533,6 +546,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "FileCopytoArchieve",
@@ -545,14 +559,7 @@
 			{
 				"name": "SendFailureEmail",
 				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "FileProcessingLoop",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -560,6 +567,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
 					"method": "POST",
@@ -575,14 +583,7 @@
 			{
 				"name": "SendLookupErrorMail",
 				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "SP_AddFailureEntry4",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -590,6 +591,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
 					"method": "POST",
@@ -605,14 +607,7 @@
 			{
 				"name": "SendDeleteFilesErrorEmail",
 				"type": "WebActivity",
-				"dependsOn": [
-					{
-						"activity": "SP_AddFailureEntry7",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -620,6 +615,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"url": "https://prod-18.eastus.logic.azure.com:443/workflows/942ffb8fb37f49558c06f95f817e4f5a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IX9G7IWP2ONqL_u5a_7O8bGFtVo311uhkG2sBJg1gW0",
 					"method": "POST",
@@ -651,6 +647,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"storedProcedureName": "[dbo].[FBODS_FAILURE_ENTRY_LOAD_STATUS]",
 					"storedProcedureParameters": {
@@ -684,6 +681,7 @@
 					"type": "LinkedServiceReference"
 				}
 			}
-		]
+		],
+		"annotations": []
 	}
 }
