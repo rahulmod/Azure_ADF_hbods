@@ -639,7 +639,7 @@
 								"PipelineName": "@{pipeline().Pipeline}",
 								"Subject": "An error has occurred!",
 								"ErrorMessage": "Activity 'FileProcessingLoop' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
-								"EmailTo": "genpactswiftreportingteam@genpact.com"
+								"EmailTo": "rahul.modak1@fb.genpact.com"
 							}
 						}
 					},
@@ -664,7 +664,7 @@
 								"PipelineName": "@{pipeline().Pipeline}",
 								"Subject": "An error has occurred!",
 								"ErrorMessage": "Activity 'LookupMetadata' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
-								"EmailTo": "genpactswiftreportingteam@genpact.com"
+								"EmailTo": "rahul.modak1@fb.genpact.com"
 							}
 						}
 					},
@@ -689,7 +689,7 @@
 								"PipelineName": "@{pipeline().Pipeline}",
 								"Subject": "An error has occurred!",
 								"ErrorMessage": "Activity 'DeleteInputFiles' is failed, please check the pipeline metrics log or table [dbo].[FBODS_LOAD_STATUS] in FBODS DB.",
-								"EmailTo": "genpactswiftreportingteam@genpact.com"
+								"EmailTo": "rahul.modak1@fb.genpact.com"
 							}
 						}
 					},
