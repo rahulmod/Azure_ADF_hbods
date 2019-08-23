@@ -15,10 +15,6 @@
 				"secretName": "adfLinkedfilestrk",
 				"secretVersion": ""
 			}
-		},
-		"connectVia": {
-			"referenceName": "fbvmir",
-			"type": "IntegrationRuntimeReference"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/linkedservices"
