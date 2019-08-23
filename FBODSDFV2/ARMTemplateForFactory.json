@@ -1416,14 +1416,9 @@
 						"secretName": "adfLinkedfilestrk",
 						"secretVersion": ""
 					}
-				},
-				"connectVia": {
-					"referenceName": "fbvmir",
-					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/fbvmir')]",
 				"[concat(variables('factoryId'), '/linkedServices/adfhbods1')]"
 			]
 		},
@@ -1444,14 +1439,9 @@
 						"secretName": "[parameters('SQL_FBODS_properties_typeProperties_connectionString_secretName')]",
 						"secretVersion": ""
 					}
-				},
-				"connectVia": {
-					"referenceName": "fbvmir",
-					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/fbvmir')]",
 				"[concat(variables('factoryId'), '/linkedServices/adfhbods1')]"
 			]
 		},
