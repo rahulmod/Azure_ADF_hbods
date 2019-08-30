@@ -7,7 +7,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "LOAD_DATA_FBODS",
+					"referenceName": "LOAD_DATA_FBODS1",
 					"type": "PipelineReference"
 				}
 			}
