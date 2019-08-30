@@ -1,0 +1,16 @@
+{
+	"name": "DestinationDataset_uum",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageCCA",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": "",
+			"folderPath": "500000-r"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,17 @@
+{
+	"name": "zerofolder-r",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2019-04-20T13:07:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

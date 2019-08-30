@@ -1,0 +1,16 @@
+{
+	"name": "DestinationDataset_2vy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageCCA",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": "",
+			"folderPath": "zerofolder-r"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

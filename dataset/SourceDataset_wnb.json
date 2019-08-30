@@ -1,0 +1,19 @@
+{
+	"name": "SourceDataset_wnb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageSource",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"compression": {
+				"type": "ZipDeflate"
+			},
+			"fileName": "",
+			"folderPath": "400000-1"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

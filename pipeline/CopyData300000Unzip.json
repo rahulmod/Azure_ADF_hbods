@@ -1,0 +1,55 @@
+{
+	"name": "CopyData300000Unzip",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_vei",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "300000-2/"
+					},
+					{
+						"name": "Destination",
+						"value": "300000-r/"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true,
+						"maxConcurrentConnections": 10
+					},
+					"sink": {
+						"type": "BlobSink",
+						"maxConcurrentConnections": 10
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_vei",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_vei",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

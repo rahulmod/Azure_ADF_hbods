@@ -1,0 +1,55 @@
+{
+	"name": "CopyData600000-r",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_xmz",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "600000/"
+					},
+					{
+						"name": "Destination",
+						"value": "600000-r/"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true,
+						"maxConcurrentConnections": 10
+					},
+					"sink": {
+						"type": "BlobSink",
+						"maxConcurrentConnections": 10
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_xmz",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_xmz",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

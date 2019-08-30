@@ -1,0 +1,20 @@
+{
+	"name": "DestinationDataset_hrp",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageCCA",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Optimal"
+			},
+			"fileName": "",
+			"folderPath": "700000"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

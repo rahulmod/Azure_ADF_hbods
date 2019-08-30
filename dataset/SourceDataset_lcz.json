@@ -1,0 +1,16 @@
+{
+	"name": "SourceDataset_lcz",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageSource",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": "",
+			"folderPath": "700000"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

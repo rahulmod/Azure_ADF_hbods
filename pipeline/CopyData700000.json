@@ -1,0 +1,55 @@
+{
+	"name": "CopyData700000",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_hrp",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "/700000/"
+					},
+					{
+						"name": "Destination",
+						"value": "700000/"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "FileSystemSource",
+						"recursive": true,
+						"maxConcurrentConnections": 10
+					},
+					"sink": {
+						"type": "BlobSink",
+						"maxConcurrentConnections": 10
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_hrp",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_hrp",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

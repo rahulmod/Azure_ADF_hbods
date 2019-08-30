@@ -1,0 +1,20 @@
+{
+	"name": "SourceDataset_100000",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SFTPCopy",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "FileShare",
+		"typeProperties": {
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Optimal"
+			},
+			"fileName": "",
+			"folderPath": "/100000"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

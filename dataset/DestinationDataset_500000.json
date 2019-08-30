@@ -1,0 +1,19 @@
+{
+	"name": "DestinationDataset_500000",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageCCA",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"compression": {
+				"type": "ZipDeflate"
+			},
+			"fileName": "",
+			"folderPath": "500000"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

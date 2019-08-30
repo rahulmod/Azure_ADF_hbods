@@ -1,0 +1,20 @@
+{
+	"name": "DestinationDataset_y4h",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageCCA",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"compression": {
+				"type": "Deflate",
+				"level": "Optimal"
+			},
+			"fileName": "",
+			"folderPath": "700000"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

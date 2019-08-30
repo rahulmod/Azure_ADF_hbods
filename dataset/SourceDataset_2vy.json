@@ -1,0 +1,19 @@
+{
+	"name": "SourceDataset_2vy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SFTPCopy",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "FileShare",
+		"typeProperties": {
+			"compression": {
+				"type": "ZipDeflate"
+			},
+			"fileName": "",
+			"folderPath": "/0"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

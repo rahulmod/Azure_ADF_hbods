@@ -1,0 +1,17 @@
+{
+	"name": "800000-r1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2019-04-29T18:25:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
